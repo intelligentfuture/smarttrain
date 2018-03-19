@@ -254,7 +254,7 @@ int main(int argc,char *argv[]){
     modbuscode = argv[3];
 
 //   printf("%X %s",nodeId,modbuscode);
-    int fd = open_port(portname, B9600);
+    int fd = open_port(portname, B115200);
 
     pthread_t threads;
     int rc;
@@ -293,7 +293,5 @@ int main(int argc,char *argv[]){
     close(fd);
     fclose(fp);
     pthread_exit(NULL);
-
-
 
 }
