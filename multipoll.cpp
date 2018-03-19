@@ -219,7 +219,7 @@ int main(int argc,char *argv[]){
     char portname[] = "/dev/ttyACM0";
     sprintf(portname,"/dev/tty%s",pname);
     nodeId = atoi(argv[2]);
-    printf("%X %d\n",nodeId,nodeId);
+    printf("Init ID:%04X (%d)\n",nodeId,nodeId);
     
     int sum = nodeId+FUNC_CODE+2;
     sum = 256-sum;
