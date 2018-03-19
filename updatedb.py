@@ -36,7 +36,7 @@ def queryUpdate(tstamp, node):
         db = sqlite3.connect('occupy.db');
         c = db.cursor()
         stm = "select tstamp,node,previous,occupy from occupy where (node=%s and julianday(tstamp) > %s);"%(node, tstamp)
-        print(stm)
+        #print(stm)
 
         c.execute(stm)
         resp = c.fetchall()
@@ -100,4 +100,3 @@ def updateDB():
 
 while(1):
     updateDB()
-    print("xxx")
