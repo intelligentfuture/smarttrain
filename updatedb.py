@@ -94,3 +94,7 @@ def updateDB():
     for _node in getNode():
         checkForUpdate(_node)
     time.sleep(10) # wait 10 sec for next update
+
+while(1):
+    updateDB()
+    
