@@ -69,9 +69,6 @@ int open_port(char* portname, int speed)
     return fd;
 }
 
-
-
-
 int process_buffer(char *buf, uint16_t *frame)
 {
     int status = 0;
@@ -114,7 +111,6 @@ int process_buffer(char *buf, uint16_t *frame)
     
     return status;
 }
-
 
 int modbus_parser(char ch, uint16_t *frame)
 {
@@ -162,15 +158,10 @@ int modbus_parser(char ch, uint16_t *frame)
     return status;
 }
 
-
-
-
-
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
     //do nothing
     return 0;
 }
-
 
 int insert(int node,int prev, int occupy){
     printf("%d %d\n",prev,occupy);
@@ -221,7 +212,6 @@ void *PrintHello(void *threadid) {
     
 }
 
-
 int main(int argc,char *argv[]){
     
     int count=0;
@@ -229,17 +219,14 @@ int main(int argc,char *argv[]){
     char portname[] = "/dev/ttyACM0";
     sprintf(portname,"/dev/tty%s",pname);
     nodeId = atoi(argv[2]);
-    
-    printf("%X %d\n",nodeId,nodeId);
-    
+    printf("Init ID:%04X (%d)\n",nodeId,nodeId);
     
     int sum = nodeId+FUNC_CODE+2;
     sum = 256-sum;
     sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",nodeId,FUNC_CODE,0,2,sum);
-    
-    
-    int fd = open_port(portname, B9600);
-    
+     
+    int fd = open_port(portname, B115200);
+
     pthread_t threads;
     int rc;
     
@@ -278,8 +265,5 @@ int main(int argc,char *argv[]){
     close(fd);
     fclose(fp);
     pthread_exit(NULL);
-    
-    
-    
-}
 
+}
