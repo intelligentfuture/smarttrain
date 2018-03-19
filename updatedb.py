@@ -3,13 +3,13 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 import json
 import time
-    
+
 resp = list()
 node_list = list()
 
 def getNode():
     try:
-        db = sqlite3.connect('occupy.db');
+        db = sqlite3.connect('occupy.db')
         c = db.cursor()
         c.execute("select distinct node from occupy;")
         node_list = c.fetchall()
@@ -17,7 +17,7 @@ def getNode():
     except Exception as e:
         print(e)
     return node_list
-    
+
 
 def queryCheck(node):
     try:
@@ -36,6 +36,8 @@ def queryUpdate(tstamp, node):
         db = sqlite3.connect('occupy.db');
         c = db.cursor()
         stm = "select tstamp,node,previous,occupy from occupy where (node=%s and julianday(tstamp) > %s);"%(node, tstamp)
+        print(stm)
+
         c.execute(stm)
         resp = c.fetchall()
         db.close()
@@ -71,7 +73,7 @@ def update(data):
                 chk = 1
     except Exception as e:
         print(e)
-    return chk   
+    return chk
 
 def checkForUpdate(node):
     chk = checkLast(node)
@@ -87,14 +89,15 @@ def checkForUpdate(node):
             tmp['previous'] = res[2]
             tmp['occupy'] = res[3]
             tmplist += [tmp]
-        sendObj[str(node)] = tmplist
+#        sendObj[str(node)] = tmplist
+        sendObj['update'] = json.dumps(tmplist)
         update(sendObj)
-            
+
 def updateDB():
     for _node in getNode():
-        checkForUpdate(_node)
+        checkForUpdate(_node[0])
     time.sleep(10) # wait 10 sec for next update
 
 while(1):
     updateDB()
-    
+    print("xxx")
