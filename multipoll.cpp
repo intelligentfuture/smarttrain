@@ -301,8 +301,8 @@ void *PrintHello(void *threadid) {
             
             int sum = nodeId+FUNC_CODE+2;
             sum = 256-sum;
-            sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",atoi(arr[0]),FUNC_CODE,0,2,sum);
-            
+            sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",atoi(arr[i]),FUNC_CODE,0,2,sum);
+            printf("%s %s\n",arr[i],modbuscode);
             wr = write(*tid, modbuscode, 17);
             
 
