@@ -18,7 +18,9 @@ using namespace std;
 
 uint8_t nodeId = 0;
 
-char modbuscode[17];
+//char modbuscode[17];
+
+char *nlist;
 
 enum state {IDLE, RECEPTION, END} protState = IDLE;
 
@@ -69,6 +71,12 @@ int open_port(char* portname, int speed)
     return fd;
 }
 
+
+/*
+ 
+ Modbus Management
+ 
+ */
 int process_buffer(char *buf, uint16_t *frame)
 {
     int status = 0;
@@ -198,19 +206,113 @@ int insert(int node,int prev, int occupy){
     
 }
 
+//void getmodbus(int nodeId,char *modbuscode){
+//    int sum = nodeId+FUNC_CODE+2;
+//    sum = 256-sum;
+//    sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",nodeId,FUNC_CODE,0,2,sum);
+//}
+
+
+int split (char *str, char c, char ***arr)
+{
+    int count = 1;
+    int token_len = 1;
+    int i = 0;
+    char *p;
+    char *t;
+    
+    p = str;
+    while (*p != '\0')
+    {
+        if (*p == c)
+            count++;
+        p++;
+    }
+    
+    *arr = (char**) malloc(sizeof(char*) * count);
+    if (*arr == NULL)
+        exit(1);
+    
+    p = str;
+    while (*p != '\0')
+    {
+        if (*p == c)
+        {
+            (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+            if ((*arr)[i] == NULL)
+                exit(1);
+            
+            token_len = 0;
+            i++;
+        }
+        p++;
+        token_len++;
+    }
+    (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+    if ((*arr)[i] == NULL)
+        exit(1);
+    
+    i = 0;
+    p = str;
+    t = ((*arr)[i]);
+    while (*p != '\0')
+    {
+        if (*p != c && *p != '\0')
+        {
+            *t = *p;
+            t++;
+        }
+        else
+        {
+            *t = '\0';
+            i++;
+            t = ((*arr)[i]);
+        }
+        p++;
+    }
+    
+    return count;
+}
+
 void *PrintHello(void *threadid) {
     
     long *tid;
     tid = (long *)threadid;
     
+    
+    char **arr = NULL;
+    int c =0;
+    int i=0;
 
+    c = split(nlist, ',', &arr);
+    
+
+    
+    
+
+    
     int wr;
     while(1){
-        wr = write(*tid, modbuscode, 17);
+        for (i = 0; i < c; i++){
+            printf("string #%d: %s\n", i, arr[i]);
+            
+            
+            char modbuscode[17];
+            
+            int sum = nodeId+FUNC_CODE+2;
+            sum = 256-sum;
+            sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",atoi(arr[0]),FUNC_CODE,0,2,sum);
+            
+            wr = write(*tid, modbuscode, 17);
+            
+
+        }
         sleep(5);
     }
     
 }
+
+
 
 int main(int argc,char *argv[]){
     
@@ -218,13 +320,8 @@ int main(int argc,char *argv[]){
     char *pname = argv[1];
     char portname[] = "/dev/ttyACM0";
     sprintf(portname,"/dev/tty%s",pname);
-    nodeId = atoi(argv[2]);
-    printf("Init ID:%04X (%d)\n",nodeId,nodeId);
-    
-    int sum = nodeId+FUNC_CODE+2;
-    sum = 256-sum;
-    sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",nodeId,FUNC_CODE,0,2,sum);
-     
+    nlist = argv[2];
+
     int fd = open_port(portname, B115200);
 
     pthread_t threads;
@@ -244,7 +341,6 @@ int main(int argc,char *argv[]){
     unsigned char vlen;
     int wr;
     while(1){
-        //wr = write(fd, ":590300000002A2\r\n", 17);
         
         if( fgets (str, 60, fp)!=NULL ) {
             uint16_t frame[6]={0,0,0,0,0,0};
