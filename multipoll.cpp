@@ -89,12 +89,12 @@ int process_buffer(char *buf, uint16_t *frame)
         tmpbuf[0] = buf[0];
         tmpbuf[1] = buf[1];
         frame[0] = strtoul(tmpbuf, NULL, 16);
-        //  printf("> %d %d %d %d %d %d\n",frame[0],frame[1],frame[2],frame[3],frame[4],frame[5]);
+        printf("> %d %d %d %d %d %d\n",frame[0],frame[1],frame[2],frame[3],frame[4],frame[5]);
         
         tmpbuf[0] = buf[2];
         tmpbuf[1] = buf[3];
         frame[1] = strtoul(tmpbuf, NULL, 16);
-        //  printf(">> %d %d %d %d %d %d\n",frame[0],frame[1],frame[2],frame[3],frame[4],frame[5]);
+        //printf(">> %d %d %d %d %d %d\n",frame[0],frame[1],frame[2],frame[3],frame[4],frame[5]);
         
         for (i = 4; i <= buf_len-2; i+=4) {
             tmpbuf2[0] = buf[i];
@@ -304,7 +304,7 @@ void *PrintHello(void *threadid) {
             sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",nid,FUNC_CODE,0,2,sum);
             printf("%d %s\n",nid,modbuscode);
             wr = write(*tid, modbuscode, 17);
-            
+            sleep(1);
 
         }
         sleep(5);
