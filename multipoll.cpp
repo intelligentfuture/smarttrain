@@ -322,7 +322,7 @@ int main(int argc,char *argv[]){
     sprintf(portname,"/dev/tty%s",pname);
     nlist = argv[2];
 
-    int fd = open_port(portname, B115200);
+    int fd = open_port(portname, B57600);
 
     pthread_t threads;
     int rc;
