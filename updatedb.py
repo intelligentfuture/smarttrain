@@ -78,7 +78,7 @@ def update(data):
 def checkForUpdate(node):
     chk = checkLast(node)
     if(chk > 0 and chk < queryCheck(node)[0][0]):
-        #print("send update");
+        print("send update", node);
         val = queryUpdate(chk, node)
         sendObj = {}
         tmplist = []

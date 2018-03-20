@@ -179,8 +179,6 @@ int insert(int node,int prev, int occupy){
     sqlite3 *db;
     
     char *sqlCmd=NULL;
-    float p = prev*1.0/1.0;
-    float o = occupy*1.0/1.0;
     
     asprintf(&sqlCmd, "INSERT INTO occupy(node,previous,occupy) VALUES(%d,%d*0.1,%d*0.1);",node,prev,occupy);
     
@@ -199,7 +197,8 @@ int insert(int node,int prev, int occupy){
         return(1);
     }
     sqlite3_close(db);
-    printf("write success\n");    
+    //printf("write success\n");    
+    printf("insert: %d, %f, %f\n",node,prev*0.1,occupy*0.1);
     return 0;
     
 }
