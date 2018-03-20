@@ -288,9 +288,7 @@ void *PrintHello(void *threadid) {
     
 
     
-    
 
-    
     int wr;
     while(1){
         for (i = 0; i < c; i++){
@@ -302,8 +300,9 @@ void *PrintHello(void *threadid) {
             int sum = nid+FUNC_CODE+2;
             sum = 256-sum;
             sprintf(modbuscode,":%02X%02X%02X%06X%02X\r\n",nid,FUNC_CODE,0,2,sum);
-            printf("%d %s\n",nid,modbuscode);
             wr = write(*tid, modbuscode, 17);
+            printf("%d %s %d\n",nid,modbuscode,wr);
+
             sleep(1);
 
         }
