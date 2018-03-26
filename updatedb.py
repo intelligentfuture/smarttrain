@@ -40,7 +40,6 @@ def queryUpdate(tstamp, node):
 
         c.execute(stm)
         resp = c.fetchall()
-        print(resp)
         db.close()
     except Exception as e:
         print(e)

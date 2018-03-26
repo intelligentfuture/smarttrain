@@ -306,6 +306,10 @@ void *PrintHello(void *threadid) {
 
 int main(int argc,char *argv[]){
     
+    
+    
+
+    
     int count=0;
     char *pname = argv[1];
     char portname[] = "/dev/ttyACM0";
@@ -329,8 +333,8 @@ int main(int argc,char *argv[]){
             int i;
             for(i=0;i<17;i++)
                 modbus_parser(ch[i], frame);
-            //printf("%d %d %d %d %d %d\n",frame[0],frame[1],frame[2],frame[3],frame[4],frame[5]);
-            if(not (frame[2]==0 && frame[4]==0))
+
+        if(not (frame[2]==0 && frame[4]==0))
                 insert(frame[0],frame[2],frame[4]);   
     }
     close(fd);
