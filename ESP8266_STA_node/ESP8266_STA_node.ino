@@ -23,8 +23,6 @@ Ticker t1, t2, t3, t4, t5, t6, t7, t8;
 
 unsigned int t_cut[8];
 bool state[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-bool pushState[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-char* waitingData[9];
 
 bool clientState = false;
 
@@ -39,12 +37,10 @@ uint8_t sendPacket(char data[]){
 void checkConnection(){
   if(WiFi.status() == WL_CONNECTED){
     if (!clientState){
-      Serial.print("Connect to server... ");
-      sendPacket("JOIN\n");
-      delay(500);
+      Serial.print("Connecting to gateway... ");
+        pushData(0xF, 0xF, 0xFFFFFFFF);
       if (checkReply("ACCEPT\n", "REJECT\n") == 1){
         clientState = true;
-        pushData(0xFF, 0xFF, 0xFFFFFFFF);
       }else{
         clientState = false;
         Serial.println("FAIL");
@@ -130,7 +126,9 @@ void handleRISING(uint8_t idx){
         t8.attach(0.001, count_t, idx);
         break;
     }
-    pushData(idx, 0, 0);
+    if (clientState){
+        pushData(idx, 0, 0);
+    }
   }
 }
 
@@ -163,73 +161,83 @@ void handleFALLING(uint8_t idx){
         t8.detach();
         break;
     }
-    pushData(idx, 1, get_t(idx));
+    if (clientState){
+        pushData(idx, 1, get_t(idx));
+    }
     reset_t(idx);
   }
 }
 
 void handleInt0(){
-  if (digitalRead(sensor_pin[0])){
-    handleRISING(0);
-  }else {
-    handleFALLING(0);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[0])){
+        handleRISING(0);
+    }else {
+        handleFALLING(0);
+    }
 }
 
 void handleInt1(){
-  if (digitalRead(sensor_pin[1])){
-    handleRISING(1);
-  }else {
-    handleFALLING(1);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[1])){
+        handleRISING(1);
+    }else {
+        handleFALLING(1);
+    }
 }
 
 void handleInt2(){
-  if (digitalRead(sensor_pin[2])){
-    handleRISING(2);
-  }else {
-    handleFALLING(2);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[2])){
+        handleRISING(2);
+    }else {
+        handleFALLING(2);
+    }
 }
 
 void handleInt3(){
-  if (digitalRead(sensor_pin[3])){
-    handleRISING(3);
-  }else {
-    handleFALLING(3);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[3])){
+        handleRISING(3);
+    }else {
+        handleFALLING(3);
+    }
 }
 
 void handleInt4(){
-  if (digitalRead(sensor_pin[4])){
-    handleRISING(4);
-  }else {
-    handleFALLING(4);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[4])){
+        handleRISING(4);
+    }else {
+        handleFALLING(4);
+    }
 }
 
 void handleInt5(){
-  if (digitalRead(sensor_pin[5])){
-    handleRISING(5);
-  }else {
-    handleFALLING(5);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[5])){
+        handleRISING(5);
+    }else {
+        handleFALLING(5);
+    }
 }
 
 void handleInt6(){
-  if (digitalRead(sensor_pin[6])){
-    handleRISING(6);
-  }else {
-    handleFALLING(6);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[6])){
+        handleRISING(6);
+    }else {
+        handleFALLING(6);
+    }
 }
 
 void handleInt7(){
-  if (digitalRead(sensor_pin[7])){
-    handleRISING(7);
-  }else {
-    handleFALLING(7);
-  }
+    delay(10);
+    if (digitalRead(sensor_pin[7])){
+        handleRISING(7);
+    }else {
+        handleFALLING(7);
+    }
 }
 
 void onGotIP(const WiFiEventStationModeGotIP& evt){
@@ -268,12 +276,12 @@ void setup()
   WiFi.hostname(String(chip_id).c_str());
   
   Serial.println();
-  Serial.println("SYS ON");
+  Serial.println();
   Serial.printf("ID: %04X, Connect to SSID: %s \n", chip_id, ssid);
   client_obj.begin(port);
 }
 
 void loop() {
   checkConnection();
-  delay(100);
+  delay(1000);
 }

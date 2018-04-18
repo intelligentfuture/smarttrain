@@ -7,6 +7,17 @@ ap.config(authmode=3, channel=11, hidden=True)
 
 import usocket as socket
 
+def decodeData(recv, addr):
+    try:
+        if (recv[8] == 'F' and recv[9] == 'F' and recv[10:18] == "FFFFFFFF"):
+            connection.sendto("ACCEPT\n", addr)
+            print("!!JOIN:", addr)
+        else:
+            print(':'+txt)
+    except Exception as e:
+        print("!!ERR:", e)
+
+
 def listen():
     connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -22,14 +33,9 @@ def listen():
                         if data:
                             txt = data.strip()
                             if(len(txt) == 22):
-                                print(':'+txt)
-                            elif(len(txt) == 4):
-                                if(txt == "JOIN"):
-                                    connection.sendto("ACCEPT\n", addr)
-                                    print("!!JOIN request from", addr)
-                            elif(len(txt) > 4):
-                                print("!!ER:", txt, len(txt))
-                                connection.sendto("RESEND\n", addr)
+                                decodeData(txt, addr)
+                            else:
+                                print("!!ERR:", txt, len(txt))
                 except Exception as e:
                     print('!!connection:', e)
                     break
