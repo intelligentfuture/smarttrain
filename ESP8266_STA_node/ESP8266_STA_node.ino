@@ -37,16 +37,11 @@ uint8_t sendPacket(char data[]){
 void checkConnection(){
   if(WiFi.status() == WL_CONNECTED){
     if (!clientState){
-      Serial.print("Connecting to gateway... ");
+        Serial.println("Connecting to gateway... ");
         pushData(0xF, 0xF, 0xFFFFFFFF);
-      if (checkReply("ACCEPT\n", "REJECT\n") == 1){
         clientState = true;
-      }else{
-        clientState = false;
-        Serial.println("FAIL");
-        delay(5000);
-      }
-    }
+    }else if ((uint16_t)millis() > 0xFC00)
+      pushData(0xF, 0xF, 0xFFFFFFFF);
   }else if(WiFi.status() == WL_DISCONNECTED){
     clientState = false;
   }
@@ -54,13 +49,12 @@ void checkConnection(){
 
 uint8_t checkReply(char *chk, char *opt){
   if(WiFi.status() == WL_CONNECTED){
-    delay(100);
+    delay(50);
     const uint8_t cb = client_obj.parsePacket();
     if (cb){
       char packetBuffer[255];
       client_obj.read(packetBuffer, cb);
       packetBuffer[cb] = '\0';
-      Serial.print(packetBuffer);
       if (strncmp(packetBuffer, chk, cb-1) == 0)
         return 1;
       else if (strncmp(packetBuffer, opt, cb-1) == 0)
@@ -168,8 +162,13 @@ void handleFALLING(uint8_t idx){
   }
 }
 
+void delay_intl(uint8_t ms){
+  uint16_t st = millis();
+  uint16_t sp = st+ms;
+}
+
 void handleInt0(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[0])){
         handleRISING(0);
     }else {
@@ -178,7 +177,7 @@ void handleInt0(){
 }
 
 void handleInt1(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[1])){
         handleRISING(1);
     }else {
@@ -187,7 +186,7 @@ void handleInt1(){
 }
 
 void handleInt2(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[2])){
         handleRISING(2);
     }else {
@@ -196,7 +195,7 @@ void handleInt2(){
 }
 
 void handleInt3(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[3])){
         handleRISING(3);
     }else {
@@ -205,7 +204,7 @@ void handleInt3(){
 }
 
 void handleInt4(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[4])){
         handleRISING(4);
     }else {
@@ -214,7 +213,7 @@ void handleInt4(){
 }
 
 void handleInt5(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[5])){
         handleRISING(5);
     }else {
@@ -223,7 +222,7 @@ void handleInt5(){
 }
 
 void handleInt6(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[6])){
         handleRISING(6);
     }else {
@@ -232,7 +231,7 @@ void handleInt6(){
 }
 
 void handleInt7(){
-    delay(10);
+    delay_intl(10);
     if (digitalRead(sensor_pin[7])){
         handleRISING(7);
     }else {
@@ -274,7 +273,6 @@ void setup()
   
   WiFi.begin(ssid, password);
   WiFi.hostname(String(chip_id).c_str());
-  
   Serial.println();
   Serial.println();
   Serial.printf("ID: %04X, Connect to SSID: %s \n", chip_id, ssid);

@@ -1,29 +1,24 @@
 import serial
 import time
 
-port = '/dev/ttyS14'
+port = '/dev/ttyS10'
 
 def connect(b_rate):
     try:
         return serial.Serial(port, b_rate, timeout=10)
     except Exception as e:
-        print("!!ERR:", e)
+        print("!!ERR: connect", e)
 
 def calcLRC(input):
-    input=input.decode('hex')
-    lrc = 0
-    i = 0
-    message = bytearray(input)
-    for b in message:
-        if(i == 0):
-            pass
-        else:
-            lrc ^= b
-        i+=1;
-    return lrc
+    lrc = 0x0
+    for b in input:
+        lrc += b
+        lrc %= 0xFFFF+1
+    return "%04X"%(0xFFFF - lrc)
 
 def processData(t_stamp, chip_id, pin_id, d_type, value):
-
+    print(t_stamp, chip_id, pin_id, d_type, value)
+    # print("processData")
     
     
 def decodeData(recv):
@@ -34,17 +29,20 @@ def decodeData(recv):
         d_type = recv[10]
         value = recv[11:19]
         lrc = recv[19:23]
-        if calcLRC(recv[1:19]) == int(lrc, 16):
+        LRCval = calcLRC([int(timestamp, 16), 
+                int(chip_id, 16), int(pin_id, 16), 
+                int(d_type, 16), int(value, 16)])
+        if (LRCval == lrc):
             if (pin_id == 'F' and d_type == 'F' and value == "FFFFFFFF"):
-            
+                print(chip_id, "OK")
             else:
                 processData(int(timestamp, 16), 
-                int(chip_id, 16), int(pin_id, 16), 
+                chip_id, int(pin_id, 16), 
                 int(d_type, 16), int(value, 16))
         else:
             print("!!ERR: Incorrect LRC")
     except Exception as e:
-        print("!!ERR:", e)
+        print("!!ERR: decodeData", e)
 
 def commLoop():
     comm = connect(115200)
@@ -52,15 +50,17 @@ def commLoop():
         while True:
             try:
                 if comm.readable():
-                    rcv = comm.readline().decode("ascii");
+                    rcv = comm.readline().decode("ascii")
                     if (len(rcv) == 25):
                         if rcv[0] == ':':
                             decodeData(rcv)
-                    else:
-                        if rcv[0:2] == "!!":
-                            if rcv.startswith("!!JOIN:"):
-                                print(rcv)
-                            else if(rcv.startswith("!!ERR:"))
-                                print(rcv)
+                    elif (len(rcv) > 4):
+                        if rcv[0] == "!":
+                            print(rcv)
             except Exception as e:
-                print("!!ERR:", e)
+                print("!!ERR: commLoop", e)
+
+try:
+    commLoop()
+except Exception as e:
+    print("!!ERR: MAIN", e)

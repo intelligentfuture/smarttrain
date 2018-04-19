@@ -6,18 +6,6 @@ ap.config(essid='CTRL_CENT_GW_NODE', password='ACDINN--')
 ap.config(authmode=3, channel=11, hidden=True)
 
 import usocket as socket
-
-def decodeData(recv, addr):
-    try:
-        if (recv[8] == 'F' and recv[9] == 'F' and recv[10:18] == "FFFFFFFF"):
-            connection.sendto("ACCEPT\n", addr)
-            print("!!JOIN:", addr)
-        else:
-            print(':'+txt)
-    except Exception as e:
-        print("!!ERR:", e)
-
-
 def listen():
     connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -33,9 +21,9 @@ def listen():
                         if data:
                             txt = data.strip()
                             if(len(txt) == 22):
-                                decodeData(txt, addr)
+                                print(':'+txt)
                             else:
-                                print("!!ERR:", txt, len(txt))
+                                print("!!ERR: TXT", txt, len(txt))
                 except Exception as e:
                     print('!!connection:', e)
                     break
