@@ -1,11 +1,4 @@
-import network
-ap = network.WLAN(network.AP_IF)
-ap.active(True)
-ap.ifconfig(('10.0.0.1', '255.255.255.0', '10.0.0.1', '10.0.0.1'))
-ap.config(essid='CTRL_CENT_GW_NODE', password='ACDINN--')
-ap.config(authmode=3, channel=11, hidden=True)
-
-import usocket as socket
+import socket
 def listen():
     connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

@@ -9,12 +9,12 @@ const char* ssid     = "CTRL_CENT_GW_NODE"; //CTRL_CENT_GW_NODE
 const char* password = "ACDINN--"; //ACDINN--
 uint16_t chip_id = ESP.getChipId();
 
-IPAddress gw(10, 20, 18, 254);
+IPAddress gw(10, 20, 18, 1);
 const int port = 55555;
 
 WiFiUDP ntpUDP;
 //NTPClient(UDP& udp, const char* poolServerName, int timeOffset, int updateInterval)
-NTPClient timeClient(ntpUDP, "10.20.18.254", 0, 60000);
+NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60000);
 
 WiFiUDP client_obj;
 
@@ -42,11 +42,12 @@ uint8_t sendPacket(char data[]){
 void checkConnection(){
   if(WiFi.status() == WL_CONNECTED){
     if (!clientState){
-        Serial.println("Connecting to gateway... ");
-        pushData(0xF, 0xF, 0xFFFFFFFF);
-        clientState = true;
-    }else if ((uint16_t)millis() > 0xFC00)
+      timeClient.update();
+      Serial.println(timeClient.getEpochTime());
+      Serial.println("Connecting to gateway... ");
       pushData(0xF, 0xF, 0xFFFFFFFF);
+      clientState = true;
+    }
   }else if(WiFi.status() == WL_DISCONNECTED){
     clientState = false;
   }
@@ -86,11 +87,11 @@ uint16_t checksum_calc(int data){
 }
 
 void pushData(uint8_t sensor_id, uint8_t header_id, unsigned int data){
-  uint16_t now = millis();
+  unsigned long now = timeClient.getEpochTime();
   uint16_t checksum = checksum_calc(now+chip_id+sensor_id+header_id+data);
   
-  char updateTXT[24];
-  sprintf(updateTXT, ":%04X%04X%01X%01X%08X%04X\n",now ,chip_id, sensor_id, header_id, data, checksum );
+  char updateTXT[28];
+  sprintf(updateTXT, ":%08X%04X%01X%01X%08X%04X\n",now ,chip_id, sensor_id, header_id, data, checksum );
   uint8_t sb = sendPacket(updateTXT);
   Serial.printf("%d Byte >> %s", sb, updateTXT);
 }
@@ -247,7 +248,6 @@ void handleInt7(){
 void onGotIP(const WiFiEventStationModeGotIP& evt){
   Serial.print("WiFi Connected, IP: ");
   Serial.println(WiFi.localIP());
-  timeClient.update();
 }
 
 void onDisconnected(const WiFiEventStationModeDisconnected& evt){
@@ -288,5 +288,5 @@ void setup()
 
 void loop() {
   checkConnection();
-  delay(1000);
+  delay(5000);
 }
