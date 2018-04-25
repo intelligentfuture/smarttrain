@@ -1,16 +1,32 @@
-import serial
 import sys
 import time
 import json
+import socket
 
-port = '/dev/ttyS10'
-
-def connect(b_rate=115200):
-    try:
-        return serial.Serial(port, b_rate, timeout=1)
-    except Exception as e:
-        print("!!ERR: connect", e)
-
+def listen():
+    connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    connection.bind(('0.0.0.0', 55555))
+    while True:
+        try:
+            while True:
+                try:
+                    rcv, addr = connection.recvfrom(28)
+                    for data in rcv.decode('ascii').split(':'):
+                        data = data.replace("\r", "")
+                        data = data.replace("\n", "")
+                        if data:
+                            txt = data.strip()
+                            if(len(txt) == 26):
+                                decodeData(txt)
+                            else:
+                                print("!!ERR: RCV", txt, len(txt))
+                except Exception as e:
+                    print('!!ERR: CONN', e)
+                    break
+        except Exception as e:
+            print('!!ERR: SOCKET', e)
+                
 def calcLRC(input):
     lrc = 0x0
     for b in input:
@@ -34,7 +50,7 @@ def sensorLoopTime(uid):
         sensor_mem_now[uid] = time.time()
         if uid in sensor_mem_past:
             t_diff = sensor_mem_now[uid] - sensor_mem_past[uid]
-            if t_diff > 0.05: # time difference > 50 ms (0.05 secs)
+            if t_diff > 1: # time difference > 1 s
                 return t_diff
             else:
                 return 0
@@ -57,7 +73,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
                 
         elif d_type == 1 and value > 0:
             sens_time = value/1000.0 # in secs
-            if sens_time > 0.1: # each occupied time can't faster than 0.1 secs
+            if sens_time > 0.2: # each occupied time can't faster than 0.2 secs
                 node_ocup_time[uid] = (time.time(), sens_time)
                 if uid not in node_list:
                     node_list[uid] = 0
@@ -85,12 +101,12 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
 
 def decodeData(recv):
     try:
-        timestamp = recv[1:5]
-        chip_id = recv[5:9]
-        pin_id = recv[9]
-        d_type = recv[10]
-        value = recv[11:19]
-        lrc = recv[19:23]
+        timestamp = recv[0:8]
+        chip_id = recv[8:12]
+        pin_id = recv[12]
+        d_type = recv[13]
+        value = recv[14:23]
+        lrc = recv[23:26]
         LRCval = calcLRC([int(timestamp, 16), 
                 int(chip_id, 16), int(pin_id, 16), 
                 int(d_type, 16), int(value, 16)])
@@ -107,26 +123,11 @@ def decodeData(recv):
     except Exception as e:
         print("!!ERR: decodeData", e)
 
-def commLoop():
-    comm = connect()
-    if comm:
-        while True:
-            try:
-                comm.flush()
-                rcv = comm.readline().decode("ascii")
-                if (len(rcv) == 25):
-                    if rcv[0] == ':':
-                        decodeData(rcv)
-                elif (len(rcv) > 4):
-                    if rcv[0] == "!":
-                        print(rcv)
-            except Exception as e:
-                print("!!ERR: commLoop", e)
-
-try:
-    commLoop()
-except Exception as e:
-    print("!!ERR: MAIN", e)
-except KeyboardInterrupt:
-    print("\r\nExit...OK")
-    sys.exit(0)
+if __name__ == "__main__":
+    try:
+        listen()
+    except Exception as e:
+        print("!!ERR: MAIN", e)
+    except KeyboardInterrupt:
+        print("\r\nExit...OK")
+        sys.exit(0)
