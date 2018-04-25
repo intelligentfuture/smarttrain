@@ -64,32 +64,33 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
     try:
         uid = str(chip_id)+str(pin_id)
         sens_time = 0
+        apch = time.time()
+        data_list = []
         if d_type == 0 and value == 0:
             sens_time = sensorLoopTime(uid)
             if sens_time > 5: # each loop can't faster than 5 secs
-                node_round_time[uid] = (time.time(), sens_time)
+                node_round_time[uid] = (apch, sens_time)
                 if uid in node_list:
                     node_list[uid] = node_list[uid]+1
+                    data_list = (
+                        d_type,
+                        uid,
+                        apch,
+                        node_list[uid],
+                        node_round_time[uid]
+                    )
 
         elif d_type == 1 and value > 0:
             sens_time = value/1000.0 # in secs
             if sens_time > 0.2: # each occupied time can't faster than 0.2 secs
-                node_ocup_time[uid] = (time.time(), sens_time)
+                node_ocup_time[uid] = (apch, sens_time)
                 if uid not in node_list:
                     node_list[uid] = 0
-
-        # put data into one object
-        data_list = []
-        if uid in node_list:
-            # print("loop_count", node_list[uid])
-            if uid in node_ocup_time:
-                # print("ocup_time", node_ocup_time[uid])
-                if uid in node_round_time:
-                    data_list = (
-                        time.time(), 
-                        node_list[uid], 
-                        node_ocup_time[uid], 
-                        node_round_time[uid]
+                data_list = (
+                        d_type,
+                        uid,
+                        apch,
+                        node_ocup_time[uid]
                     )
 
         # do something with data here
