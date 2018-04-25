@@ -1,4 +1,5 @@
 #include <ESP8266WiFi.h>
+#include "NTPClient.h"
 #include <WiFiUDP.h>
 #include <Ticker.h>
 #include <stdio.h>
@@ -8,8 +9,12 @@ const char* ssid     = "CTRL_CENT_GW_NODE"; //CTRL_CENT_GW_NODE
 const char* password = "ACDINN--"; //ACDINN--
 uint16_t chip_id = ESP.getChipId();
 
-IPAddress gw(10, 0, 0, 1);
+IPAddress gw(10, 20, 18, 254);
 const int port = 55555;
+
+WiFiUDP ntpUDP;
+//NTPClient(UDP& udp, const char* poolServerName, int timeOffset, int updateInterval)
+NTPClient timeClient(ntpUDP, "10.20.18.254", 0, 60000);
 
 WiFiUDP client_obj;
 
@@ -242,6 +247,7 @@ void handleInt7(){
 void onGotIP(const WiFiEventStationModeGotIP& evt){
   Serial.print("WiFi Connected, IP: ");
   Serial.println(WiFi.localIP());
+  timeClient.update();
 }
 
 void onDisconnected(const WiFiEventStationModeDisconnected& evt){
@@ -277,6 +283,7 @@ void setup()
   Serial.println();
   Serial.printf("ID: %04X, Connect to SSID: %s \n", chip_id, ssid);
   client_obj.begin(port);
+  timeClient.begin();
 }
 
 void loop() {
