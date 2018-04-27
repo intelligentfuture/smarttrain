@@ -26,7 +26,7 @@ def listen():
                     break
         except Exception as e:
             print('!!ERR: SOCKET', e)
-                
+
 def calcLRC(input):
     lrc = 0x0
     for b in input:
@@ -59,43 +59,44 @@ def sensorLoopTime(uid):
     except Exception as e:
         print("!!ERR: sensorTime", e)
         return 0
-    
+
 def processData(t_stamp, chip_id, pin_id, d_type, value):
     try:
         uid = str(chip_id)+str(pin_id)
         sens_time = 0
+        apch = time.time()
+        data_list = []
         if d_type == 0 and value == 0:
             sens_time = sensorLoopTime(uid)
             if sens_time > 5: # each loop can't faster than 5 secs
-                node_round_time[uid] = (time.time(), sens_time)
+                node_round_time[uid] = (apch, sens_time)
                 if uid in node_list:
                     node_list[uid] = node_list[uid]+1
-                
+                    data_list = (
+                        d_type,
+                        uid,
+                        apch,
+                        node_list[uid],
+                        node_round_time[uid]
+                    )
+
         elif d_type == 1 and value > 0:
             sens_time = value/1000.0 # in secs
             if sens_time > 0.2: # each occupied time can't faster than 0.2 secs
-                node_ocup_time[uid] = (time.time(), sens_time)
+                node_ocup_time[uid] = (apch, sens_time)
                 if uid not in node_list:
                     node_list[uid] = 0
-        
-        # put data into one object
-        data_list = []
-        if uid in node_list:
-            # print("loop_count", node_list[uid])
-            if uid in node_ocup_time:
-                # print("ocup_time", node_ocup_time[uid])
-                if uid in node_round_time:
-                    data_list = (
-                        time.time(), 
-                        node_list[uid], 
-                        node_ocup_time[uid], 
-                        node_round_time[uid]
+                data_list = (
+                        d_type,
+                        uid,
+                        apch,
+                        node_ocup_time[uid]
                     )
 
         # do something with data here
         if data_list:
             print(data_list)
-        
+
     except Exception as e:
         print("!!ERR: processData", e)
 
@@ -105,11 +106,12 @@ def decodeData(recv):
         chip_id = recv[8:12]
         pin_id = recv[12]
         d_type = recv[13]
-        value = recv[14:23]
-        lrc = recv[23:26]
+        value = recv[14:22]
+        lrc = recv[22:26]
         LRCval = calcLRC([int(timestamp, 16), 
                 int(chip_id, 16), int(pin_id, 16), 
                 int(d_type, 16), int(value, 16)])
+        #print(recv, recv[0:8], recv[8:12], recv[12], recv[13], recv[14:22], recv[22:26])
         if (LRCval == lrc):
             if (pin_id == 'F' and d_type == 'F' and value == "FFFFFFFF"):
                 node_last_seen[chip_id] = (time.time(), int(timestamp, 16)) # system time, node time
