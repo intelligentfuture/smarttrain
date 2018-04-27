@@ -18,16 +18,16 @@ NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60000);
 
 WiFiUDP client_obj;
 
-uint8_t sensor_pin[8] = {5, 4, 0, 2, 14, 12, 13, 10}; //[D1 - D7, SD3]
-uint8_t pin_count = 8;
+uint8_t sensor_pin[6] = {5, 4, 14, 12, 13, 10}; //[D1 D2 D5 D6 D7, SD3]
+uint8_t pin_count = 6;
 
 WiFiEventHandler gotIpEventHandler;
 WiFiEventHandler disconnectedEventHandler;
 
-Ticker t1, t2, t3, t4, t5, t6, t7, t8;
+Ticker t1, t2, t3, t4, t5, t6;
 
-unsigned int t_cut[8];
-bool state[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+unsigned int t_cut[6];
+bool state[6] = {0, 0, 0, 0, 0, 0};
 
 bool clientState = false;
 
@@ -42,9 +42,9 @@ uint8_t sendPacket(char data[]){
 void checkConnection(){
   if(WiFi.status() == WL_CONNECTED){
     if (!clientState){
+      Serial.print("Connecting to gateway... ");
       timeClient.update();
-      Serial.println(timeClient.getEpochTime());
-      Serial.println("Connecting to gateway... ");
+      Serial.println("Done!");
       pushData(0xF, 0xF, 0xFFFFFFFF);
       clientState = true;
     }
@@ -99,7 +99,6 @@ void pushData(uint8_t sensor_id, uint8_t header_id, unsigned int data){
 void handleRISING(uint8_t idx){
   // set tick every 1 ms
   if (!state[idx]){
-    state[idx] = 1;
     switch (idx) {
       case 0:
         t1.attach(0.001, count_t, idx);
@@ -119,13 +118,8 @@ void handleRISING(uint8_t idx){
       case 5:
         t6.attach(0.001, count_t, idx);
         break;
-      case 6:
-        t7.attach(0.001, count_t, idx);
-        break;
-      case 7:
-        t8.attach(0.001, count_t, idx);
-        break;
     }
+    state[idx] = 1;
     if (clientState){
         pushData(idx, 0, 0);
     }
@@ -134,37 +128,33 @@ void handleRISING(uint8_t idx){
 
 void handleFALLING(uint8_t idx){
   if (state[idx]){
-    state[idx] = 0;
-    switch (idx) {
-      case 0:
-        t1.detach();
-        break;
-      case 1:
-        t2.detach();
-        break;
-      case 2:
-        t3.detach();
-        break;
-      case 3:
-        t4.detach();
-        break;
-      case 4:
-        t5.detach();
-        break;
-      case 5:
-        t6.detach();
-        break;
-      case 6:
-        t7.detach();
-        break;
-      case 7:
-        t8.detach();
-        break;
-    }
-    if (clientState){
+    if (get_t(idx) > 200){  // minimum time in ms
+      switch (idx) {
+        case 0:
+          t1.detach();
+          break;
+        case 1:
+          t2.detach();
+          break;
+        case 2:
+          t3.detach();
+          break;
+        case 3:
+          t4.detach();
+          break;
+        case 4:
+          t5.detach();
+          break;
+        case 5:
+          t6.detach();
+          break;
+      }
+      if (clientState){
         pushData(idx, 1, get_t(idx));
+      }
+      reset_t(idx);
+      state[idx] = 0;
     }
-    reset_t(idx);
   }
 }
 
@@ -227,24 +217,6 @@ void handleInt5(){
     }
 }
 
-void handleInt6(){
-    delay_intl(10);
-    if (digitalRead(sensor_pin[6])){
-        handleRISING(6);
-    }else {
-        handleFALLING(6);
-    }
-}
-
-void handleInt7(){
-    delay_intl(10);
-    if (digitalRead(sensor_pin[7])){
-        handleRISING(7);
-    }else {
-        handleFALLING(7);
-    }
-}
-
 void onGotIP(const WiFiEventStationModeGotIP& evt){
   Serial.print("WiFi Connected, IP: ");
   Serial.println(WiFi.localIP());
@@ -257,11 +229,11 @@ void onDisconnected(const WiFiEventStationModeDisconnected& evt){
 void setup()
 {
   Serial.begin(115200);
-  
   for(int i=0; i<pin_count;i++){
     pinMode(sensor_pin[i], INPUT_PULLUP);
     reset_t(i);
   }
+  pinMode(2, OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(sensor_pin[0]), handleInt0, CHANGE);
   attachInterrupt(digitalPinToInterrupt(sensor_pin[1]), handleInt1, CHANGE);
@@ -269,8 +241,6 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(sensor_pin[3]), handleInt3, CHANGE);
   attachInterrupt(digitalPinToInterrupt(sensor_pin[4]), handleInt4, CHANGE);
   attachInterrupt(digitalPinToInterrupt(sensor_pin[5]), handleInt5, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(sensor_pin[6]), handleInt6, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(sensor_pin[7]), handleInt7, CHANGE);
 
   WiFi.mode(WIFI_STA);
   
@@ -288,5 +258,8 @@ void setup()
 
 void loop() {
   checkConnection();
-  delay(5000);
+  digitalWrite(2, 0);
+  delay(500);
+  digitalWrite(2, 1);
+  delay(1000);
 }
