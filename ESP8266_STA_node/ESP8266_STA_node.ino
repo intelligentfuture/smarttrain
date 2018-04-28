@@ -119,10 +119,10 @@ void handleRISING(uint8_t idx){
         t6.attach(0.001, count_t, idx);
         break;
     }
-    state[idx] = 1;
     if (clientState){
         pushData(idx, 0, 0);
     }
+    state[idx] = 1;
   }
 }
 
@@ -158,13 +158,7 @@ void handleFALLING(uint8_t idx){
   }
 }
 
-void delay_intl(uint8_t ms){
-  uint16_t st = millis();
-  uint16_t sp = st+ms;
-}
-
 void handleInt0(){
-    delay_intl(10);
     if (digitalRead(sensor_pin[0])){
         handleRISING(0);
     }else {
@@ -173,7 +167,7 @@ void handleInt0(){
 }
 
 void handleInt1(){
-    delay_intl(10);
+    
     if (digitalRead(sensor_pin[1])){
         handleRISING(1);
     }else {
@@ -182,7 +176,7 @@ void handleInt1(){
 }
 
 void handleInt2(){
-    delay_intl(10);
+    
     if (digitalRead(sensor_pin[2])){
         handleRISING(2);
     }else {
@@ -191,7 +185,7 @@ void handleInt2(){
 }
 
 void handleInt3(){
-    delay_intl(10);
+    
     if (digitalRead(sensor_pin[3])){
         handleRISING(3);
     }else {
@@ -200,7 +194,7 @@ void handleInt3(){
 }
 
 void handleInt4(){
-    delay_intl(10);
+    
     if (digitalRead(sensor_pin[4])){
         handleRISING(4);
     }else {
@@ -209,7 +203,7 @@ void handleInt4(){
 }
 
 void handleInt5(){
-    delay_intl(10);
+    
     if (digitalRead(sensor_pin[5])){
         handleRISING(5);
     }else {
