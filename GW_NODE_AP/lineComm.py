@@ -1,31 +1,6 @@
 import sys
 import time
-import json
-import socket
-
-def listen():
-    connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    connection.bind(('0.0.0.0', 55555))
-    while True:
-        try:
-            while True:
-                try:
-                    rcv, addr = connection.recvfrom(28)
-                    for data in rcv.decode('ascii').split(':'):
-                        data = data.replace("\r", "")
-                        data = data.replace("\n", "")
-                        if data:
-                            txt = data.strip()
-                            if(len(txt) == 26):
-                                decodeData(txt)
-                            else:
-                                print("!!ERR: RCV", txt, len(txt))
-                except Exception as e:
-                    print('!!ERR: CONN', e)
-                    break
-        except Exception as e:
-            print('!!ERR: SOCKET', e)
+import socketserver
 
 def calcLRC(input):
     lrc = 0x0
@@ -125,11 +100,30 @@ def decodeData(recv):
     except Exception as e:
         print("!!ERR: decodeData", e)
 
+class nodeUDPHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        rcv = self.request[0]
+        socket = self.request[1]
+        try:
+            for data in rcv.decode('ascii').split(':'):
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
+                if data:
+                    txt = data.strip()
+                    if(len(txt) == 26):
+                        decodeData(txt)
+                    else:
+                        print("!!ERR: RCV", txt, len(txt))
+        except Exception as e:
+            print('!!ERR: CONN', e)
+
 if __name__ == "__main__":
     try:
-        listen()
+        server = socketserver.UDPServer(('0.0.0.0', 55555), nodeUDPHandler)
+        server.serve_forever()
     except Exception as e:
         print("!!ERR: MAIN", e)
     except KeyboardInterrupt:
         print("\r\nExit...OK")
         sys.exit(0)
+    
