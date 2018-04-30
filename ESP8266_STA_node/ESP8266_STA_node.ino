@@ -14,7 +14,7 @@ const int port = 55555;
 
 WiFiUDP ntpUDP;
 //NTPClient(UDP& udp, const char* poolServerName, int timeOffset, int updateInterval)
-NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60000);
+NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60);
 
 WiFiUDP client_obj;
 
@@ -22,7 +22,6 @@ uint8_t sensor_pin[6] = {5, 4, 14, 12, 13, 10}; //[D1 D2 D5 D6 D7, SD3]
 uint8_t pin_count = 6;
 
 WiFiEventHandler gotIpEventHandler;
-WiFiEventHandler disconnectedEventHandler;
 
 Ticker t1, t2, t3, t4, t5, t6;
 
@@ -30,6 +29,7 @@ unsigned int t_cut[6];
 bool state[6] = {0, 0, 0, 0, 0, 0};
 
 bool clientState = false;
+bool ntpState = false;
 
 uint8_t sendPacket(char data[]){
   uint8_t PACKET_SIZE = strlen(data);
@@ -43,31 +43,22 @@ void checkConnection(){
   if(WiFi.status() == WL_CONNECTED){
     if (!clientState){
       Serial.print("Connecting to gateway... ");
-      timeClient.update();
       Serial.println("Done!");
-      pushData(0xF, 0xF, 0xFFFFFFFF);
+      if (!ntpState){
+        timeClient.update();
+        Serial.print("System time: ");
+        Serial.println(timeClient.getFormattedTime());
+        if (timeClient.getEpochTime()> 252000){
+          ntpState = true;
+        }
+      }
       clientState = true;
+      pushData(0xF, 0xF, 0xFFFFFFFF);
     }
-  }else if(WiFi.status() == WL_DISCONNECTED){
+  }else{
     clientState = false;
   }
-}
-
-uint8_t checkReply(char *chk, char *opt){
-  if(WiFi.status() == WL_CONNECTED){
-    delay(50);
-    const uint8_t cb = client_obj.parsePacket();
-    if (cb){
-      char packetBuffer[255];
-      client_obj.read(packetBuffer, cb);
-      packetBuffer[cb] = '\0';
-      if (strncmp(packetBuffer, chk, cb-1) == 0)
-        return 1;
-      else if (strncmp(packetBuffer, opt, cb-1) == 0)
-        return 2;
-    }
-   return 0;
-  }
+  digitalWrite(2, clientState);
 }
 
 void count_t(uint8_t idx){
@@ -87,42 +78,46 @@ uint16_t checksum_calc(int data){
 }
 
 void pushData(uint8_t sensor_id, uint8_t header_id, unsigned int data){
-  unsigned long now = timeClient.getEpochTime();
-  uint16_t checksum = checksum_calc(now+chip_id+sensor_id+header_id+data);
-  
-  char updateTXT[28];
-  sprintf(updateTXT, ":%08X%04X%01X%01X%08X%04X\n",now ,chip_id, sensor_id, header_id, data, checksum );
-  uint8_t sb = sendPacket(updateTXT);
-  Serial.printf("%d Byte >> %s", sb, updateTXT);
+  if(clientState){
+    digitalWrite(2, 0);
+    unsigned long now = timeClient.getEpochTime();
+    uint16_t checksum = checksum_calc(now+chip_id+sensor_id+header_id+data);
+    
+    char updateTXT[28];
+    sprintf(updateTXT, ":%08X%04X%01X%01X%08X%04X\n",now ,chip_id, sensor_id, header_id, data, checksum );
+    uint8_t sb = sendPacket(updateTXT);
+    Serial.printf("%d Byte >> %s", sb, updateTXT);
+    digitalWrite(2, 1);
+  }
 }
 
 void handleRISING(uint8_t idx){
   // set tick every 1 ms
   if (!state[idx]){
-    switch (idx) {
-      case 0:
-        t1.attach(0.001, count_t, idx);
-        break;
-      case 1:
-        t2.attach(0.001, count_t, idx);
-        break;
-      case 2:
-        t3.attach(0.001, count_t, idx);
-        break;
-      case 3:
-        t4.attach(0.001, count_t, idx);
-        break;
-      case 4:
-        t5.attach(0.001, count_t, idx);
-        break;
-      case 5:
-        t6.attach(0.001, count_t, idx);
-        break;
+    if (get_t(idx) == 0){  // minimum time in ms
+      switch (idx) {
+        case 0:
+          t1.attach(0.001, count_t, idx);
+          break;
+        case 1:
+          t2.attach(0.001, count_t, idx);
+          break;
+        case 2:
+          t3.attach(0.001, count_t, idx);
+          break;
+        case 3:
+          t4.attach(0.001, count_t, idx);
+          break;
+        case 4:
+          t5.attach(0.001, count_t, idx);
+          break;
+        case 5:
+          t6.attach(0.001, count_t, idx);
+          break;
+      }
+      pushData(idx, 0, 0);
+      state[idx] = 1;
     }
-    if (clientState){
-        pushData(idx, 0, 0);
-    }
-    state[idx] = 1;
   }
 }
 
@@ -149,9 +144,7 @@ void handleFALLING(uint8_t idx){
           t6.detach();
           break;
       }
-      if (clientState){
-        pushData(idx, 1, get_t(idx));
-      }
+      pushData(idx, 1, get_t(idx));
       reset_t(idx);
       state[idx] = 0;
     }
@@ -216,19 +209,16 @@ void onGotIP(const WiFiEventStationModeGotIP& evt){
   Serial.println(WiFi.localIP());
 }
 
-void onDisconnected(const WiFiEventStationModeDisconnected& evt){
-  Serial.println("Wifi disconnected");
-}
-
 void setup()
 {
+  pinMode(2, OUTPUT);
+  digitalWrite(2, 0);
   Serial.begin(115200);
   for(int i=0; i<pin_count;i++){
     pinMode(sensor_pin[i], INPUT_PULLUP);
     reset_t(i);
   }
-  pinMode(2, OUTPUT);
-
+  
   attachInterrupt(digitalPinToInterrupt(sensor_pin[0]), handleInt0, CHANGE);
   attachInterrupt(digitalPinToInterrupt(sensor_pin[1]), handleInt1, CHANGE);
   attachInterrupt(digitalPinToInterrupt(sensor_pin[2]), handleInt2, CHANGE);
@@ -239,21 +229,21 @@ void setup()
   WiFi.mode(WIFI_STA);
   
   gotIpEventHandler = WiFi.onStationModeGotIP(&onGotIP);
-  disconnectedEventHandler = WiFi.onStationModeDisconnected(&onDisconnected);
-  
+
+  WiFi.disconnect(true);
   WiFi.begin(ssid, password);
-  WiFi.hostname(String(chip_id).c_str());
+  WiFi.hostname(String(chip_id, HEX));
   Serial.println();
   Serial.println();
   Serial.printf("ID: %04X, Connect to SSID: %s \n", chip_id, ssid);
   client_obj.begin(port);
   timeClient.begin();
+  while (WiFi.status() != WL_CONNECTED){
+    delay(200);
+  }
 }
 
 void loop() {
   checkConnection();
-  digitalWrite(2, 0);
-  delay(500);
-  digitalWrite(2, 1);
-  delay(1000);
+  delay(5000);
 }
