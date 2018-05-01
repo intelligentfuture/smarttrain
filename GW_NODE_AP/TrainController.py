@@ -97,10 +97,6 @@ def controller(Tref,x0,v0,t0):
 
 def call_train(TargetTime,CurrentPos,CurrentSpd,CurrentTime):
     trainForward()
-    # TargetTime = float(input("Target Time : "))
-    # CurrentPos = float(input("Current Position : "))
-    # CurrentSpd = float(input("Current Speed : "))
-    # CurrentTime = float(input("Current Time : "))
     tx = time.time()
     rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
     print(time.time() - tx, rl)
