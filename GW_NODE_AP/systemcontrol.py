@@ -2,7 +2,7 @@ import sys
 import time
 import socketserver
 
-import call22
+import call22 as cal
 
 def calcLRC(input):
     lrc = 0x0
@@ -73,7 +73,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
         # do something with data here
         if data_list:
             print(data_list)
-            define_order(data_list)
+            cal.define_order(data_list)
 
     except Exception as e:
         print("!!ERR: processData", e)
