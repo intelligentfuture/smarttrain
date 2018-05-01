@@ -12,7 +12,7 @@ duty = 0
 pwm.start(duty)
 
 I = 0
-dt = 0.01
+dt = 0.05
 error_old = 0
 
 def trainStop():
@@ -68,7 +68,7 @@ def PID(ref, speed):
 def speedPlanner(x, t):
     print("speed planner")
     v_avg = x/t
-    return v_avg + 0.01
+    return v_avg + 0.2
 
 def controller(Tref,x0,v0,t0):
     print("train controller working")
