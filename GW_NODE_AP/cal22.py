@@ -173,13 +173,10 @@ def define_order(line):
             if tdiff < 0.0001 or tdiff == 0 :
                 return
             ta = tb
-            # if len(line) == 6:
-            # print(line[2],line[5])
-            # speed = 48/line[6]
+
             if uid not in sensors_list:
                 sensors_list.append(uid)
-#                print("add",uid);
-#        print(len(sensors_list))
+
         sensors_text = ""
         for sr in sensors_list:
             sensors_text+=sr+' '
