@@ -124,6 +124,11 @@ if __name__ == "__main__":
     except Exception as e:
         print("!!ERR: MAIN", e)
     except KeyboardInterrupt:
-        print("\r\nExit...OK")
+        try:
+            server.shutdown()
+        except Exception as e:
+            print("\r\nExit...Error:", e)
+        else:
+            print("\r\nExit...OK")
         sys.exit(0)
     
