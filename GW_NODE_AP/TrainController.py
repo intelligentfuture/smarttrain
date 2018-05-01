@@ -107,3 +107,5 @@ def test():
     print(time.time() - tx)
     pwm.stop()
     GPIO.cleanup()
+
+test()
