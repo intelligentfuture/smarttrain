@@ -69,6 +69,7 @@ def speedPlanner(x, t):
     return v_avg + 0.01
 
 def controller(Tref,x0,v0,t0):
+    print("train controller working")
     global dt
     trackLength = 3.736
     N = int((Tref-t0)/dt)
@@ -90,6 +91,7 @@ def controller(Tref,x0,v0,t0):
         time.sleep(dt - 0.0008) #0.0008 is average calculations time
 
     return xs[-1]
+
 
 # trainForward()
 # TargetTime = float(input("Target Time : "))
