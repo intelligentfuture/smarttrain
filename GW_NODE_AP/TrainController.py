@@ -95,14 +95,15 @@ def controller(Tref,x0,v0,t0):
     return xs[-1]
 
 
-# trainForward()
-# TargetTime = float(input("Target Time : "))
-# CurrentPos = float(input("Current Position : "))
-# CurrentSpd = float(input("Current Speed : "))
-# CurrentTime = float(input("Current Time : "))
-# tx = time.time()
-# rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
-# print(time.time() - tx, rl)
-#print(time.time() - tx)
-# pwm.stop()
-# GPIO.cleanup()
+def test():
+    trainForward()
+    TargetTime = float(input("Target Time : "))
+    CurrentPos = float(input("Current Position : "))
+    CurrentSpd = float(input("Current Speed : "))
+    CurrentTime = float(input("Current Time : "))
+    tx = time.time()
+    rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
+    print(time.time() - tx, rl)
+    print(time.time() - tx)
+    pwm.stop()
+    GPIO.cleanup()
