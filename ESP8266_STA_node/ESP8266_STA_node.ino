@@ -18,7 +18,7 @@ NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60);
 
 WiFiUDP client_obj;
 
-uint8_t sensor_pin[6] = {5, 4, 14, 12, 13, 10}; //[D1 D2 D5 D6 D7, SD3]
+uint8_t sensor_pin[6] = {13, 12, 14, 4, 5, 10}; //[D7 D6 D5 D2 D1, SD3]
 uint8_t pin_count = 6;
 
 WiFiEventHandler gotIpEventHandler;
