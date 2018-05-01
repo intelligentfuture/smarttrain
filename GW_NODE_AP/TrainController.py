@@ -105,7 +105,5 @@ def call_train(TargetTime,CurrentPos,CurrentSpd,CurrentTime):
     rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
     print(time.time() - tx, rl)
     print(time.time() - tx)
-    pwm.stop()
-    GPIO.cleanup()
-
-test()
+#    pwm.stop()
+#    GPIO.cleanup()
