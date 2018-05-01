@@ -49,6 +49,7 @@ tm2 = 0
 DIST_A = 0
 DIST_B = 0
 
+timetable = list()
 
 def predefine():
     DURATION = TIME_ALL*60 #sec
@@ -120,13 +121,22 @@ def define_sensor():
                 if NUM_OF_STATION==STATIONS:
                     break
 
-
+    print("=== TIMETABLE ===")
+    sum_time = 0
+    for i in range(0,NUM_OF_STATION):
+        for d in timetable:
+            sum_time=sum_time+d['timetotarget']
+            print(d['status'],"%.2f"%sum_time,d['a'],d['b'],d['distab'],"%.4f"%d['distanttostation'],"%.4f"%d['u'],"%.4f"%d['v'],"%.4f"%d['timetotarget'])
+        print('0 stop for %d sec. at station %d'%(TIME_WAIT,i+1))
+        sum_time = sum_time+TIME_WAIT
 
 def calculate_speedtable(ratio):
     print("ratio =",ratio)
     SPEED_NORM = ratio*SPEED_MAX # --> 296.5 mmps
 
     global NUM_OF_STATION
+    global timetable
+
     LENR  = 0
     DIST_B = 0
     DIST_A = 0
@@ -187,6 +197,19 @@ def calculate_speedtable(ratio):
             tprev = temp
             sum_t = sum_t+t
             print("1","%03.4f"%(sum_t),d,"%3.4f"%(distab[d]),"%3.4f"%(distanttostation),"%3.4f"%(uspeed),"%3.4f"%(v),"%2.4f"%(t))
+            schedule = dict()
+            dd = d.split("-")
+            schedule['status']=1
+            schedule['tag']=d
+            schedule['distab']=distab[d]
+            schedule['a']=dd[0]
+            schedule['b']=dd[1]
+            schedule['distanttostation']=distanttostation
+            schedule['u']=uspeed
+            schedule['v']=v
+            schedule['timetotarget']=t
+
+            timetable.append(schedule)
 
         elif acount >=pnty :
             sumdistb=sumdistb-distab[d]
@@ -200,11 +223,40 @@ def calculate_speedtable(ratio):
             sum_t = sum_t+t
             print("3","%03.4f"%(sum_t),d,"%3.4f"%(distab[d]),"%3.4f"%(distanttostation),"%3.4f"%(uspeed),"%3.4f"%(v),"%2.4f"%(t))
 
+            schedule = dict()
+            dd = d.split("-")
+            schedule['status']=3
+            schedule['tag']=d
+            schedule['distab']=distab[d]
+            schedule['a']=dd[0]
+            schedule['b']=dd[1]
+            schedule['distanttostation']=distanttostation
+            schedule['u']=uspeed
+            schedule['v']=v
+            schedule['timetotarget']=t
+
+            timetable.append(schedule)
 
         else :
             t = distab[d]/v
             sum_t = sum_t+t
             print("2","%03.4f"%(sum_t),d,"%3.4f"%(distab[d]),"%3.4f"%(distanttostation),"%3.4f"%(uspeed),"%3.4f"%(v),"%2.4f"%(t))
+            schedule = dict()
+            dd = d.split("-")
+
+            schedule['status']=2
+            schedule['tag']=d
+            schedule['distab']=distab[d]
+            schedule['a']=dd[0]
+            schedule['b']=dd[1]
+            schedule['distanttostation']=distanttostation
+            schedule['u']=uspeed
+            schedule['v']=v
+            schedule['timetotarget']=t
+
+
+
+            timetable.append(schedule)
 
         distanttostation = distanttostation - distab[d]
         acount=acount+1

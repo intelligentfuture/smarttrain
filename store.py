@@ -48,11 +48,11 @@ def update():
             print("Wrong arguments")
             resp['status'] = 'ERR'
         try:
-            
+
             p = float(previous)
             o = float(occupy)
             speed=0.0
-            
+
             if(p==0.0):
                 speed = train_length/o
             else:
@@ -60,8 +60,8 @@ def update():
 
             if(speed!=0):
                 sendspeed(node,speed)
-            
-        
+
+
             db = sqlite3.connect('occupy.db')
             c = db.cursor()
             q = "INSERT INTO occupy(tstamp,node,previous,occupy,speed) VALUES('%s',%s,%s,%s,%s)"%(tstamp,node,previous,occupy,str(speed))
@@ -137,7 +137,7 @@ def getactive():
     except Exception as e:
         print(e)
         db.close()
-    
+
     return json.dumps(resp)
 
 
@@ -169,7 +169,7 @@ def speed():
     except Exception as e:
         print(e)
         db.close()
-    
+
     return json.dumps(resp)
 
 
