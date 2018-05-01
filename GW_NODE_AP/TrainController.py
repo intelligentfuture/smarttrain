@@ -66,7 +66,7 @@ def PID(ref, speed):
 
 def speedPlanner(x, t):
     v_avg = x/t
-    return v_avg + 0.01 
+    return v_avg + 0.01
 
 def controller(Tref,x0,v0,t0):
     global dt
@@ -88,17 +88,17 @@ def controller(Tref,x0,v0,t0):
         pwm.ChangeDutyCycle(duty*100)
         t = t + dt
         time.sleep(dt - 0.0008) #0.0008 is average calculations time
-    return xs[-1]
-        
-trainForward()
-TargetTime = float(input("Target Time : "))
-CurrentPos = float(input("Current Position : "))
-CurrentSpd = float(input("Current Speed : "))
-CurrentTime = float(input("Current Time : "))
-tx = time.time()
-rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
-print(time.time() - tx, rl)
-#print(time.time() - tx)
-pwm.stop()
-GPIO.cleanup()
 
+    return xs[-1]
+
+# trainForward()
+# TargetTime = float(input("Target Time : "))
+# CurrentPos = float(input("Current Position : "))
+# CurrentSpd = float(input("Current Speed : "))
+# CurrentTime = float(input("Current Time : "))
+# tx = time.time()
+# rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
+# print(time.time() - tx, rl)
+#print(time.time() - tx)
+# pwm.stop()
+# GPIO.cleanup()
