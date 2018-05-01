@@ -29,7 +29,7 @@ def trainBackward():
     GPIO.output(18, False)
 
 def estimatedSpeed(duty):
-    print("estimate")
+#    print("estimate")
     a4 = 2.9289
     a3 = -7.2071
     a2 = 5.8578
@@ -44,7 +44,7 @@ def estimatedSpeed(duty):
         return 0
 
 def PID(ref, speed):
-    print("pid")
+ #   print("pid")
     Kp = 0.1
     Ki = 5.0
 
@@ -66,12 +66,12 @@ def PID(ref, speed):
         return 0
 
 def speedPlanner(x, t):
-    print("speed planner")
+   # print("speed planner")
     v_avg = x/t
     return v_avg + 0.2
 
 def controller(Tref,x0,v0,t0):
-    print("train controller working")
+  #  print("train controller working")
     global dt
     trackLength = 3.736
     N = int((Tref-t0)/dt)
