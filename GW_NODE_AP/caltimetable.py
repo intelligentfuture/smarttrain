@@ -1,3 +1,4 @@
+#https://github.com/intelligentfuture/smarttrain/tree/v2
 import sys
 import time
 import json
@@ -121,7 +122,7 @@ LENT =  480
 
 
 def define_order(line):
-  #  print(line)
+    print("LINE=",line)
     global pa
     global pb
     global ta
@@ -130,6 +131,7 @@ def define_order(line):
     global speed
     global distab
     global distdest,ab_order
+    global sensors_list
     ddist = 0
     tdiff = 0
 #    line = line.strip()
@@ -148,7 +150,7 @@ def define_order(line):
         elif data_type == 0:
             ddtime = line[4][1]
 
-#        print(data_type,uid,dtime,ddtime)
+#print(data_type,uid,dtime,ddtime)
 
         if data_type == 0:
             pa = pb
@@ -156,15 +158,16 @@ def define_order(line):
             tb = float(dtime)
             tdiff = tb-ta
 #            print("tdiff=",tdiff)
-            if tdiff < 0.01 :
+            if tdiff < 0.0001 or tdiff == 0 :
                 return
             ta = tb
             # if len(line) == 6:
             # print(line[2],line[5])
             # speed = 48/line[6]
-        if uid not in sensors_list:
-            sensors_list.append(uid)
-
+            if uid not in sensors_list:
+                sensors_list.append(uid)
+#                print("add",uid);
+#        print(len(sensors_list))
         sensors_text = ""
         for sr in sensors_list:
             sensors_text+=sr+' '
@@ -204,7 +207,9 @@ def define_order(line):
             distdest[pb] = sum_dist
 
         print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r')
-        send_speed(uid,speed)
+        print(sensors_text)
+
+#        send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
@@ -213,15 +218,15 @@ def define_order(line):
     except Exception as e:
         print(e)
 
-    for dd in range(0,len(sensors_list)-1):
-        aa = sensors_list[dd]
-        bb = sensors_list[dd+1]
-        ab = "%s-%s"%(aa,bb)
- #       print(ab,distab[ab])
-        ab_order.append(ab)
-    ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
+#    for dd in range(0,len(sensors_list)-1):
+#        aa = sensors_list[dd]
+#        bb = sensors_list[dd+1]
+#        ab = "%s-%s"%(aa,bb)
+#        print(ab,distab[ab])
+#        ab_order.append(ab)
+#    ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
 #    print(ab,distab[ab])
-    ab_order.append(ab)   
+#    ab_order.append(ab)
 
 
 def send_speed(point,speed):
@@ -238,9 +243,6 @@ def send_speed(point,speed):
     except Exception as e:
         print(e)
 #    return Response(json.dumps(resp), mimetype='application/json')
-
-
-
 
 
 

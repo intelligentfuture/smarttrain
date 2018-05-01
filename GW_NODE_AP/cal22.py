@@ -176,6 +176,7 @@ def define_order(line):
             # if len(line) == 6:
             # print(line[2],line[5])
             # speed = 48/line[6]
+        if data_type == 1:
             if uid not in sensors_list:
                 sensors_list.append(uid)
 #                print("add",uid);
