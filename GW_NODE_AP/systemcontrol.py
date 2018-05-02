@@ -72,7 +72,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
 
         # do something with data here
         if data_list:
-            print(data_list)
+            # print(data_list)
             define_order(data_list)
 
     except Exception as e:
