@@ -70,10 +70,10 @@ def speedPlanner(x, t):
     v_avg = x/t
     return v_avg + 0.2
 
-def controller(Tref,x0,v0,t0):
+def controller(trackLength,Tref,x0,v0,t0):
   #  print("train controller working")
     global dt
-    trackLength = 3.736
+    # trackLength = 3.736
     N = int((Tref-t0)/dt)
     t = t0
     dts = np.zeros((N-1,1))
