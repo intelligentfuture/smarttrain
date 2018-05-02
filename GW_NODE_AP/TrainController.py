@@ -95,9 +95,9 @@ def controller(trackLength,Tref,x0,v0,t0):
     return xs[-1]
 
 
-def call_train(TargetTime,CurrentPos,CurrentSpd,CurrentTime):
+def call_train(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime):
     trainForward()
     tx = time.time()
-    rl = controller(TargetTime,CurrentPos,CurrentSpd,CurrentTime)
+    rl = controller(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime)
     print(time.time() - tx, rl)
     print(time.time() - tx)
