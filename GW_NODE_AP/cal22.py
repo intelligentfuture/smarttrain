@@ -23,7 +23,7 @@ LENT =  480
 
 
 def define_order(line):
-    print("LINE=",line)
+    # print("LINE=",line)
     global pa
     global pb
     global ta
