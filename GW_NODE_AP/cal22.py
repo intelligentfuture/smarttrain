@@ -1,5 +1,8 @@
 from TrainController import controller
 
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
 #conan's part
 node_list = dict()
 sensors_list = list()
