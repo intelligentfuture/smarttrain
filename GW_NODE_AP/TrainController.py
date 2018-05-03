@@ -74,17 +74,17 @@ def controller(trackLength,Tref,x0,v0,t0):
   #  print("train controller working")
     global dt
     # trackLength = 3.736
-    N = int((Tref-t0)/dt)
+    N = int(1/dt)
     t = t0
-    dts = np.zeros((N-1,1))
+    #dts = np.zeros((N-1,1))
     xs = np.zeros((N,1))
     vs = np.zeros((N,1))
     ds = np.zeros((N,1))
     xs[0] = x0
     vs[0] = v0
     for i in range(N-1):
-        TargetSpd = speedPlanner(trackLength - xs[i], Tref - t)
-        ds[i+1] = PID(TargetSpd, vs[i])
+        #TargetSpd = speedPlanner(trackLength - xs[i], Tref - t)
+        ds[i+1] = PID(Tref, vs[i])
         vs[i+1] = estimatedSpeed(ds[i])
         xs[i+1] = xs[i] + vs[i]*dt
         duty = ds[i]
@@ -92,12 +92,15 @@ def controller(trackLength,Tref,x0,v0,t0):
         t = t + dt
         time.sleep(dt - 0.0008) #0.0008 is average calculations time
 
-    return xs[-1]
+    return [xs[-1],vs[-1],t]
 
 
 def call_train(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime):
     trainForward()
+    dx = trackLength - CurrentPos
+    dt1 = TargetTime - CurrentTime
+    TargetSpd = speedPlanner(dx, dt1)
     tx = time.time()
-    rl = controller(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime)
+    rl = controller(trackLength,TargetSpd,CurrentPos,CurrentSpd,CurrentTime)
     print(time.time() - tx, rl)
-    print(time.time() - tx)
+    print(TargetSpd)
