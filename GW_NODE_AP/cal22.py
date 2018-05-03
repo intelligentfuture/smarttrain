@@ -102,11 +102,15 @@ def define_order(line):
         print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
+        print(uid,speed)
         send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
         sensors_text = ""
+
+        for x in ab_order:
+            print(x)
 
     except Exception as e:
         print(e)
