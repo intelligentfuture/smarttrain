@@ -109,9 +109,9 @@ def define_order(line):
         sensors_text = ""
         distcount = 0
         for x in range(0,len(sensors_list)-1):
-            aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
-            distcount=distcount+distab[aabb]
-            # print(aabb,distab[aabb],distcount)
+            # aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
+            distcount=distcount+distab[tag]
+            print(aabb,distab[aabb],distcount)
 
     except Exception as e:
         print(e)
