@@ -108,10 +108,11 @@ def define_order(line):
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
         sensors_text = ""
-
+        distcount = 0
         for x in range(0,len(sensors_list)-1):
             aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
-            print(aabb,distab[aabb])
+            distcount=distcount+distab[aabb]
+            print(aabb,distab[aabb],distcount)
 
     except Exception as e:
         print(e)
