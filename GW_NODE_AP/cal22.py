@@ -46,7 +46,7 @@ def define_order(line):
         elif data_type == 0:
             ddtime = line[4][1]
 
-#print(data_type,uid,dtime,ddtime)
+        print(data_type,uid,dtime,ddtime)
 
         if data_type == 0:
             pa = pb
@@ -102,7 +102,7 @@ def define_order(line):
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
         print(uid,speed)
-        send_speed(uid,speed)
+        # send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
