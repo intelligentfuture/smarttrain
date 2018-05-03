@@ -152,7 +152,7 @@ void handleFALLING(uint8_t idx){
   }
 }
 
-void handleInterupt(byte pin){
+void handleInterupt(int pin){
     if (digitalRead(sensor_pin[pin])){
         handleRISING(pin);
     }else {
@@ -161,22 +161,22 @@ void handleInterupt(byte pin){
 }
 
 void debounce_p0(){
-  p0.once_ms(100, count_t, 0);
+  p0.once_ms(100, handleInterupt, 0);
 }
 void debounce_p1(){
-  p1.once_ms(100, count_t, 1);
+  p1.once_ms(100, handleInterupt, 1);
 }
 void debounce_p2(){
-  p2.once_ms(100, count_t, 2);
+  p2.once_ms(100, handleInterupt, 2);
 }
 void debounce_p3(){
-  p3.once_ms(100, count_t, 3);
+  p3.once_ms(100, handleInterupt, 3);
 }
 void debounce_p4(){
-  p4.once_ms(100, count_t, 4);
+  p4.once_ms(100, handleInterupt, 4);
 }
 void debounce_p5(){
-  p5.once_ms(100, count_t, 5);
+  p5.once_ms(100, handleInterupt, 5);
 }
 
 void onGotIP(const WiFiEventStationModeGotIP& evt){
