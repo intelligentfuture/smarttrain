@@ -11,6 +11,7 @@ uint16_t chip_id = ESP.getChipId();
 
 IPAddress gw(10, 20, 18, 1);
 const int port = 55555;
+const uint8_t pin_count = 6;
 
 WiFiUDP ntpUDP;
 //NTPClient(UDP& udp, const char* poolServerName, int timeOffset, int updateInterval)
@@ -18,16 +19,16 @@ NTPClient timeClient(ntpUDP, "10.20.18.1", 25200, 60);
 
 WiFiUDP client_obj;
 
-uint8_t sensor_pin[6] = {13, 12, 14, 4, 5, 10}; //[D7 D6 D5 D2 D1, SD3]
-uint8_t pin_count = 6;
+uint8_t sensor_pin[pin_count] = {13, 12, 14, 4, 5, 10}; //[D7 D6 D5 D2 D1, SD3]
+
 
 WiFiEventHandler gotIpEventHandler;
 
 Ticker t1, t2, t3, t4, t5, t6;
 Ticker p0, p1, p2, p3, p4, p5;
 
-unsigned int t_cut[6];
-bool state[6] = {0, 0, 0, 0, 0, 0};
+unsigned int t_cut[pin_count];
+bool state[pin_count] = {0, 0, 0, 0, 0, 0};
 
 bool clientState = false;
 bool ntpState = false;
