@@ -92,7 +92,7 @@ def controller(trackLength,Tref,x0,v0,t0):
         t = t + dt
         time.sleep(dt - 0.0008) #0.0008 is average calculations time
 
-    return [xs[-1],vs[-1],t]
+    return xs[-1],vs[-1],t
 
 
 def call_train(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime):
