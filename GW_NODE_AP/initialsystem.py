@@ -5,13 +5,18 @@ def init_system():
 
 
 #track lenm, target time, cspeed, curposition(from start point), curtime
-    TargetTime = 60
-    x[0] = 0
-    y[0] = 0
+    TargetTime = 7
+    RailLength = 3.736
+    x = 0
+    y = 0
     z = 0
+    d = 0
+    trainForward()
     while True:
-        x,y,z = call_train(3.736,60,x[0],y[0],z)
-        if z > 60:
+        x,y,z,d = call_train(RailLength,TargetTime,x,y,z,d)
+        print(x,y,z,d)
+        if z > TargetTime:
+            trainStop()
             break
     #call_train(3.736,60,0.1,0,0)
 
