@@ -97,12 +97,12 @@ def define_order(line):
         else:
             distdest[pb] = sum_dist
 
-        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r')
+        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r\n')
         print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
         print(uid,speed)
-        send_speed(uid,speed)
+       # send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
