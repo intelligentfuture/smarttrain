@@ -110,7 +110,8 @@ def define_order(line):
         sensors_text = ""
 
         for x in range(0,len(sensors_list)-1):
-            print(sensors_list[x],sensors_list[x+1])
+            aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
+            print(aabb,distab[aabb])
 
     except Exception as e:
         print(e)
