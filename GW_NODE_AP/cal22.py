@@ -83,9 +83,9 @@ def define_order(line):
             dd = distab[tag]
             if dd > 0:
                 dd = (dd+ddist)/2
+                distab[tag]=dd
 
 
-            distab[tag]=dd
 
         else:
             distab[tag]=ddist
