@@ -174,7 +174,7 @@ void debounce_p3(){
 void debounce_p4(){
   p4.once_ms(100, count_t, 4);
 }
-void debounce_p4(){
+void debounce_p5(){
   p5.once_ms(100, count_t, 5);
 }
 
