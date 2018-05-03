@@ -109,8 +109,8 @@ def define_order(line):
             # print(data_type,uid,speed,end='\r')
         sensors_text = ""
 
-        for x in ab_order:
-            print(x)
+        for x in range(0,len(sensors_list)-1):
+            print(sensors_list[x],sensors_list[x+1])
 
     except Exception as e:
         print(e)
