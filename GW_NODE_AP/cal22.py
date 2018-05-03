@@ -23,7 +23,7 @@ LENT =  480
 
 
 def define_order(line):
-    # print("LINE=",line)
+    print("LINE=",line)
     global pa
     global pb
     global ta
@@ -111,7 +111,7 @@ def define_order(line):
         for x in range(0,len(sensors_list)-1):
             aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
             distcount=distcount+distab[aabb]
-            print(aabb,distab[aabb],distcount)
+            # print(aabb,distab[aabb],distcount)
 
     except Exception as e:
         print(e)
