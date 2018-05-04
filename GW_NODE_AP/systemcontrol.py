@@ -1,6 +1,9 @@
+#!/usr/bin/python3
+from TrainController import controller,trainForward,trainStop,call_train
 import sys
 import time
 import socketserver
+import _thread
 
 from cal22 import define_order
 
@@ -126,9 +129,37 @@ class nodeUDPHandler(socketserver.BaseRequestHandler):
         except Exception as e:
             print('!!ERR: CONN', e)
 
+def init_system(): #track length, target time, cur speed, cur position(from start point), cur time
+    while True:
+        TargetTime = 20
+        RailLength = 3.726
+        v = 0  #current speed
+        p = 0  #current position
+        rt = 0  #current time
+        d = 0  #duty
+        trainForward()
+        # Call_train(rail length,target time,position,speed,time,duty)
+        # while True:
+            # p,v,t,d = call_train(RailLength,TargetTime,p,v,t,d)
+            # print(p,v,t,d)
+            # if t > TargetTime:
+                # trainStop()
+                # break
+
+        st = time.now()
+        for i in range(TargetTime*2):
+            elm = generatebytime()[i]
+            cur_t = time.now() - st
+            p,v,rt,d = call_train(elm[0],elm[1],elm[3],elm[2],cur_t,d)
+            print(p,v,rt,d)
+        trainStop()
+        time.sleep(5)
+        
+        
 if __name__ == "__main__":
     try:
         server = socketserver.UDPServer(('0.0.0.0', 55555), nodeUDPHandler)
+        _thread.start_new_thread(init_system)
         server.serve_forever()
     except Exception as e:
         print("!!ERR: MAIN", e)
