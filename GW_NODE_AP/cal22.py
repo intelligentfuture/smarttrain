@@ -22,7 +22,26 @@ LENRM = 3736
 LENT =  480
 
 
-def define_order(line,xtime):
+def read_config():
+        with open("sensors.list","r") as f:
+            for line in f:
+                line = line.strip()
+                sensors_list.append(line)
+                # print(line)
+
+        with open("distab.list","r") as f:
+            for line in f:
+                line = line.strip()
+
+                lns = line.split("\t")
+                key = lns[0].strip()
+                val = lns[1].strip()
+                # print(key,val)
+                distab[key]=float(val)
+                ab_order.append(key)
+
+
+def define_order(line):
     # print("LINE=",line)
     global pa
     global pb
@@ -101,7 +120,7 @@ def define_order(line,xtime):
         # print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
-        print(uid,speed,sum_dist)
+        print(uid,speed,dtime,sum_dist)
        # send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
@@ -114,15 +133,15 @@ def define_order(line,xtime):
         #     distcount=distcount+distab[aabb]
         #     print(aabb,distab[aabb],distcount)
 
-        for dd in range(0,len(sensors_list)-1):
-            aa = sensors_list[dd]
-            bb = sensors_list[dd+1]
-            ab = "%s-%s"%(aa,bb)
-            # print(ab,distab[ab])
-            ab_order.append(ab)
-        ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
-        # print(ab,distab[ab])
-        ab_order.append(ab)
+        # for dd in range(0,len(sensors_list)-1):
+        #     aa = sensors_list[dd]
+        #     bb = sensors_list[dd+1]
+        #     ab = "%s-%s"%(aa,bb)
+        #     # print(ab,distab[ab])
+        #     ab_order.append(ab)
+        # ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
+        # # print(ab,distab[ab])
+        # ab_order.append(ab)
 
     except Exception as e:
         print(e)
