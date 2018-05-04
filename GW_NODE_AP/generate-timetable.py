@@ -66,7 +66,7 @@ def generatebytime():
         timetable.append(li)
         u = v
 
-    print(timetable)
+    #print(timetable)
     return timetable
 
-generatebytime()
+#generatebytime()
