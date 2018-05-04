@@ -16,7 +16,7 @@ def init_system():
     # x = 0
     # y = 0
     TargetTime = 7
-    RailLength = 3.726
+    RailLength = 3.736
     v = 0  #current speed
     p = 0  #current position
     t = 0  #current time
@@ -29,15 +29,16 @@ def init_system():
             trainStop()
             break
         time.sleep(5)
-    d = 0.38
-    call_train(RailLength,TargetTime,0,0,0,d)
-    call_train(RailLength,TargetTime,0.133,0.224,3.37,d)
-    call_train(RailLength,TargetTime,0.211,0.562,5.33,d)
-    call_train(RailLength,TargetTime,0.310,1.212,7.83,d)
-    call_train(RailLength,TargetTime,0.310,1.851,9.89,d)
-    call_train(RailLength,TargetTime,0.310,2.156,10.88,d)
-    call_train(RailLength,TargetTime,0.310,2.385,11.62,d)
-    call_train(RailLength,TargetTime,0.218,3.071,14.22,d)
+
+#    d = 0.38
+#    call_train(RailLength,TargetTime,0,0,0,d)
+#    call_train(RailLength,TargetTime,0.133,0.224,3.37,d)
+#    call_train(RailLength,TargetTime,0.211,0.562,5.33,d)
+#    call_train(RailLength,TargetTime,0.310,1.212,7.83,d)
+#    call_train(RailLength,TargetTime,0.310,1.851,9.89,d)
+#    call_train(RailLength,TargetTime,0.310,2.156,10.88,d)
+#    call_train(RailLength,TargetTime,0.310,2.385,11.62,d)
+#    call_train(RailLength,TargetTime,0.218,3.071,14.22,d)
 
     # x,y,z = call_train(RailLength,TargetTime,x,y,z)
 
