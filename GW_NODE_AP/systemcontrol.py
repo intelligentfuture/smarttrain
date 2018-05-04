@@ -20,6 +20,8 @@ node_round_time = dict()
 
 node_list = dict()
 
+ttt = time.time()
+
 def sensorLoopTime(uid):
     try:
         if uid in sensor_mem_now:
@@ -73,7 +75,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
         # do something with data here
         if data_list:
             # print(data_list)
-            define_order(data_list)
+            define_order(data_list,time.time())
 
     except Exception as e:
         print("!!ERR: processData", e)
