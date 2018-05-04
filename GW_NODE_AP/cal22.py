@@ -120,8 +120,8 @@ def define_order(line):
         # print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
-        print(uid,speed,dtime,sum_dist)
-       # send_speed(uid,speed)
+        print(uid,speed,dtime)
+        send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
@@ -150,7 +150,7 @@ def define_order(line):
 def send_speed(point,speed):
     resp = dict()
 
-    print(point,speed)
+#    print(point,speed)
     url = 'http://200ok.in.th:7654/api/set-current-speed?point=%s&speed=%.2f'%(point,speed)
     request = Request(url)
     resp['status'] = 'ERROR'

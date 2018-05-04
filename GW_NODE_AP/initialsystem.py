@@ -6,7 +6,7 @@ def init_system():
 
 #track lenm, target time, cspeed, curposition(from start point), curtime
 
-    TargetTime = 20
+    TargetTime = 15
     RailLength = 3.736
     x = 0
     y = 0
