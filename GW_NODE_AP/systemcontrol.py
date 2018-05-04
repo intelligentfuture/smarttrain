@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from TrainController import controller,trainForward,trainStop,call_train
+from generate_timetable import generatebytime
 import sys
 import time
 import socketserver
@@ -146,10 +147,10 @@ def init_system(): #track length, target time, cur speed, cur position(from star
                 # trainStop()
                 # break
 
-        st = time.now()
+        st = time.time()
         for i in range(TargetTime*2):
             elm = generatebytime()[i]
-            cur_t = time.now() - st
+            cur_t = time.time() - st
             p,v,rt,d = call_train(elm[0],elm[1],elm[3],elm[2],cur_t,d)
             print(p,v,rt,d)
         trainStop()
@@ -159,7 +160,7 @@ def init_system(): #track length, target time, cur speed, cur position(from star
 if __name__ == "__main__":
     try:
         server = socketserver.UDPServer(('0.0.0.0', 55555), nodeUDPHandler)
-        _thread.start_new_thread(init_system)
+        _thread.start_new_thread(init_system, ())
         server.serve_forever()
     except Exception as e:
         print("!!ERR: MAIN", e)
