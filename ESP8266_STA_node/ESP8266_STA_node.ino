@@ -61,6 +61,9 @@ void checkConnection(){
     clientState = false;
   }
   digitalWrite(2, clientState);
+  while (WiFi.status() != WL_CONNECTED){
+    delay(200);
+  }
 }
 
 void count_t(uint8_t idx){
@@ -186,7 +189,6 @@ void onGotIP(const WiFiEventStationModeGotIP& evt){
 
 void setup()
 {
-  ESP.eraseConfig();
   pinMode(2, OUTPUT);
   digitalWrite(2, 0);
   Serial.begin(115200);
@@ -206,7 +208,7 @@ void setup()
   Serial.printf("ID: %04X, Connect to SSID: %s \n", chip_id, ssid);
   
   while (WiFi.status() != WL_CONNECTED){
-    delay(500);
+    delay(1000);
   }
   
   client_obj.begin(port);
@@ -222,5 +224,5 @@ void setup()
 
 void loop() {
   checkConnection();
-  delay(5000);
+  delay(2000);
 }
