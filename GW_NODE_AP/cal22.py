@@ -23,7 +23,7 @@ LENT =  480
 
 
 def define_order(line):
-    # print("LINE=",line)
+    print("LINE=",line)
     global pa
     global pb
     global ta
@@ -46,7 +46,7 @@ def define_order(line):
         elif data_type == 0:
             ddtime = line[4][1]
 
-#print(data_type,uid,dtime,ddtime)
+        print(data_type,uid,dtime,ddtime)
 
         if data_type == 0:
             pa = pb
@@ -83,10 +83,9 @@ def define_order(line):
             dd = distab[tag]
             if dd > 0:
                 dd = (dd+ddist)/2
-            else:
-                dd = ddist
+                distab[tag]=dd
 
-            distab[tag]=dd
+
 
         else:
             distab[tag]=ddist
@@ -98,19 +97,35 @@ def define_order(line):
         else:
             distdest[pb] = sum_dist
 
-        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r')
+        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r\n')
         print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
         print(uid,speed)
-        send_speed(uid,speed)
+       # send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
         sensors_text = ""
+        distcount = 0
 
-        for x in ab_order:
-            print(x)
+        # for x in range(0,len(sensors_list)-1):
+        #     aabb = "%s-%s"%(sensors_list[x],sensors_list[x+1])
+        #     distcount=distcount+distab[aabb]
+        #     print(aabb,distab[aabb],distcount)
+
+
+       for dd in range(0,len(sensors_list)-1):
+           aa = sensors_list[dd]
+           bb = sensors_list[dd+1]
+           ab = "%s-%s"%(aa,bb)
+           print(ab,distab[ab])
+           ab_order.append(ab)
+       ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
+       print(ab,distab[ab])
+       ab_order.append(ab)
+
+
 
     except Exception as e:
         print(e)
