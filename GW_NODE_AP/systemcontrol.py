@@ -79,7 +79,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
             # print(data_list)
             if tmark ==-1:
                 tmark = time.time()
-            define_order(data_list,time.time())
+            define_order(data_list)
 
     except Exception as e:
         print("!!ERR: processData", e)
