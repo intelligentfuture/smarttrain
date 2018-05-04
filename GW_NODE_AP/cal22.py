@@ -98,7 +98,7 @@ def define_order(line,xtime):
             distdest[pb] = sum_dist
 
         # print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,xtime)
-        print(sensors_text)
+        # print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
         print(uid,speed,sum_dist)
@@ -118,10 +118,10 @@ def define_order(line,xtime):
             aa = sensors_list[dd]
             bb = sensors_list[dd+1]
             ab = "%s-%s"%(aa,bb)
-            print(ab,distab[ab])
+            # print(ab,distab[ab])
             ab_order.append(ab)
         ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
-        print(ab,distab[ab])
+        # print(ab,distab[ab])
         ab_order.append(ab)
 
     except Exception as e:
