@@ -71,6 +71,7 @@ def speedPlanner(x, t):
 
 def controller(tk,Tref,x0,v0,t0,duty):
   #  print("train controller working")
+#    print(tk,Tref,x0,v0,t0,duty,dt)
     global dt
     # trackLength = 3.736
     N = int(0.5/dt)
@@ -90,7 +91,7 @@ def controller(tk,Tref,x0,v0,t0,duty):
         pwm.ChangeDutyCycle(ds[i]*100)
         t = t + dt
         time.sleep(dt - 0.0008) #0.0008 is average calculations time
-
+#    print(xs[-1],vs[-1],t,ds[-1])
     return xs[-1],vs[-1],t,ds[-1]
 
 def call_train(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime,duty):
@@ -106,3 +107,8 @@ def call_train(trackLength,TargetTime,CurrentPos,CurrentSpd,CurrentTime,duty):
    # time.sleep(1)
     return rl[0][0],rl[1][0],rl[2],rl[3][0]
     #print(TargetSpd)
+
+
+#trainForward()
+#call_train(3.736,15,0,0,0,0.5)
+

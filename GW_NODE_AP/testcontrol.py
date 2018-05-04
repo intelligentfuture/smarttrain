@@ -25,7 +25,7 @@ def init_system():
     call_train(0.686,2.6,0,0.310,11.62)
     call_train(0.673,6.17,0,0.218,14.22)
     # time.sleep(5)
-    call_train(12,40,0,0,0)
+#    call_train(12,40,0,0,0)
 
 
 if __name__ == "__main__":

@@ -20,6 +20,9 @@ node_round_time = dict()
 
 node_list = dict()
 
+ttt = time.time()
+tmark = -1
+
 def sensorLoopTime(uid):
     try:
         if uid in sensor_mem_now:
@@ -38,6 +41,7 @@ def sensorLoopTime(uid):
         return 0
 
 def processData(t_stamp, chip_id, pin_id, d_type, value):
+    global tmark
     try:
         uid = str(chip_id)+str(pin_id)
         sens_time = 0
@@ -73,6 +77,8 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
         # do something with data here
         if data_list:
             # print(data_list)
+            if tmark ==-1:
+                tmark = time.time()
             define_order(data_list)
 
     except Exception as e:

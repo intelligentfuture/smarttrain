@@ -22,8 +22,27 @@ LENRM = 3736
 LENT =  480
 
 
+def read_config():
+        with open("sensors.list","r") as f:
+            for line in f:
+                line = line.strip()
+                sensors_list.append(line)
+                # print(line)
+
+        with open("distab.list","r") as f:
+            for line in f:
+                line = line.strip()
+
+                lns = line.split("\t")
+                key = lns[0].strip()
+                val = lns[1].strip()
+                # print(key,val)
+                distab[key]=float(val)
+                ab_order.append(key)
+
+
 def define_order(line):
-    print("LINE=",line)
+    # print("LINE=",line)
     global pa
     global pb
     global ta
@@ -46,7 +65,7 @@ def define_order(line):
         elif data_type == 0:
             ddtime = line[4][1]
 
-        print(data_type,uid,dtime,ddtime)
+        # print(data_type,uid,dtime,ddtime)
 
         if data_type == 0:
             pa = pb
@@ -79,9 +98,9 @@ def define_order(line):
         tag = "%s-%s"%(pa,pb)
 
         if tag in distab:
-            print(tag,ddist)
+            # print(tag,ddist)
             dd = distab[tag]
-            if dd > 0:
+            if ddist > 100:
                 dd = (dd+ddist)/2
                 distab[tag]=dd
 
@@ -97,12 +116,12 @@ def define_order(line):
         else:
             distdest[pb] = sum_dist
 
-        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r\n')
-        print(sensors_text)
+        # print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,xtime)
+        # print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
-        print(uid,speed)
-       # send_speed(uid,speed)
+        print(uid,speed,dtime)
+        send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
             # print(data_type,uid,speed,end='\r')
@@ -114,18 +133,15 @@ def define_order(line):
         #     distcount=distcount+distab[aabb]
         #     print(aabb,distab[aabb],distcount)
 
-
-       for dd in range(0,len(sensors_list)-1):
-           aa = sensors_list[dd]
-           bb = sensors_list[dd+1]
-           ab = "%s-%s"%(aa,bb)
-           print(ab,distab[ab])
-           ab_order.append(ab)
-       ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
-       print(ab,distab[ab])
-       ab_order.append(ab)
-
-
+        # for dd in range(0,len(sensors_list)-1):
+        #     aa = sensors_list[dd]
+        #     bb = sensors_list[dd+1]
+        #     ab = "%s-%s"%(aa,bb)
+        #     # print(ab,distab[ab])
+        #     ab_order.append(ab)
+        # ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
+        # # print(ab,distab[ab])
+        # ab_order.append(ab)
 
     except Exception as e:
         print(e)
@@ -134,7 +150,7 @@ def define_order(line):
 def send_speed(point,speed):
     resp = dict()
 
-    print(point,speed)
+#    print(point,speed)
     url = 'http://200ok.in.th:7654/api/set-current-speed?point=%s&speed=%.2f'%(point,speed)
     request = Request(url)
     resp['status'] = 'ERROR'
