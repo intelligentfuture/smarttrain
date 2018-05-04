@@ -17,14 +17,14 @@ def init_system():
     # y = 0
     TargetTime = 7
     RailLength = 3.736
-    v = 0  #current speed
-    p = 0  #current position
-    t = 0  #current time
-    d = 0  #duty
+    v = 0
+    p = 0 
+    t = 0  
+    d = 0  
     trainForward()
     while True:
         x,y,z,d = call_train(RailLength,TargetTime,v,p,t,d)
-        print(x,y,z,d)
+        print(x,y,z)
         if z > TargetTime:
             trainStop()
             break
