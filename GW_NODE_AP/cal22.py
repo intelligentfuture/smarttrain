@@ -79,9 +79,9 @@ def define_order(line):
         tag = "%s-%s"%(pa,pb)
 
         if tag in distab:
-            print(tag,ddist)
+            # print(tag,ddist)
             dd = distab[tag]
-            if dd > 100:
+            if ddist > 100:
                 dd = (dd+ddist)/2
                 distab[tag]=dd
 
