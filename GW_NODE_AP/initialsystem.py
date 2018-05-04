@@ -15,7 +15,7 @@ def init_system():
     # RailLength = 3.736
     # x = 0
     # y = 0
-    TargetTime = 7
+    TargetTime = 20
     RailLength = 3.726
     v = 0  #current speed
     p = 0  #current position
