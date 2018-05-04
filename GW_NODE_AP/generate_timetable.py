@@ -1,12 +1,17 @@
-def generatebytime():
+def generatebytime(distant,duration,nstation,start_time,current_speed,current_position,current_time,index):
 
 
-    LENRM = 3.736 #mm
+    LENRM = distant #3.736 #mm
     LENT = 0.480  #mm
     SPEED_MAX = 0.630 # mmps  --> 0.593 mps
 
     timetable = list()
-    stime = 20
+    stime = duration
+
+    remain_distant = distant - current_position
+    remain_time = duration - (current_time-start_time)
+
+    time_position = duration - remain_time
 
     SPEED_NORM = 0.492*SPEED_MAX
     # print(SPEED_NORM)
@@ -36,7 +41,7 @@ def generatebytime():
         s = u*timeframe + 0.5*a1*timeframe*timeframe
         sumdist=sumdist + s
 
-    #    print("1",z,"%.4f"%u,"%.4f"%v,sumdist)
+        # print("1",z,"%.4f"%u,"%.4f"%v,sumdist)
 
         li=[LENRM,stime,u,sumdist,z]
         timetable.append(li)
@@ -50,7 +55,7 @@ def generatebytime():
         z=z+timeframe
         s = v*timeframe
         sumdist=sumdist + s
-    #    print("2",z,"%.4f"%u,"%.4f"%v,sumdist)
+        # print("2",z,"%.4f"%u,"%.4f"%v,sumdist)
         li=[LENRM,stime,u,sumdist,z]
         timetable.append(li)
 
@@ -61,12 +66,17 @@ def generatebytime():
         s = u*timeframe + 0.5*a1*timeframe*timeframe
         sumdist=sumdist + s
 
-    #    print("3",z,"%.4f"%u,"%.4f"%v,sumdist)
+        # print("3",z,"%.4f"%u,"%.4f"%v,sumdist)
         li=[LENRM,stime,u,sumdist,z]
         timetable.append(li)
         u = v
 
     #print(timetable)
-    return timetable
+    return timetable[index+1]
 
-#generatebytime()
+
+#def generatebytime(distant,duration,nstation,start_time,current_speed,current_position,current_time):
+if __name__ == "__main__":
+    print(generatebytime(3.736,20,1,0,0,0,0))
+    print(generatebytime(3.736,20,1,0,0,0,1))
+    print(generatebytime(3.736,20,1,0,0,0,2))

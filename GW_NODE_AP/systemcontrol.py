@@ -27,6 +27,9 @@ node_list = dict()
 ttt = time.time()
 tmark = -1
 
+cur_uid = 'FFFF'
+cur_uid_speed 0
+
 def sensorLoopTime(uid):
     try:
         if uid in sensor_mem_now:
@@ -46,6 +49,8 @@ def sensorLoopTime(uid):
 
 def processData(t_stamp, chip_id, pin_id, d_type, value):
     global tmark
+    global cur_uid
+    global cur_uid_speed
     try:
         uid = str(chip_id)+str(pin_id)
         sens_time = 0
@@ -83,7 +88,7 @@ def processData(t_stamp, chip_id, pin_id, d_type, value):
             # print(data_list)
             if tmark ==-1:
                 tmark = time.time()
-            define_order(data_list)
+            cur_uid,cur_uid_speed = define_order(data_list)
 
     except Exception as e:
         print("!!ERR: processData", e)
@@ -149,14 +154,15 @@ def init_system(): #track length, target time, cur speed, cur position(from star
 
         st = time.time()
         for i in range(TargetTime*2):
-            elm = generatebytime()[i]
+    #        elm = generatebytime()[i]
             cur_t = time.time() - st
+            elm = generatebytime(RailLength,TargetTime,1,st,cur_uid_speed,cur_uid,cur_t)
             p,v,rt,d = call_train(elm[0],elm[1],elm[3],elm[2],cur_t,d)
             print(p,v,rt,d)
         trainStop()
         time.sleep(5)
-        
-        
+
+
 if __name__ == "__main__":
     try:
         server = socketserver.UDPServer(('0.0.0.0', 55555), nodeUDPHandler)

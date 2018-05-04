@@ -142,9 +142,10 @@ def define_order(line):
         # ab = "%s-%s"%(sensors_list[len(sensors_list)-1],sensors_list[0])
         # # print(ab,distab[ab])
         # ab_order.append(ab)
-
+        return uid,speed
     except Exception as e:
         print(e)
+
 
 
 def send_speed(point,speed):
