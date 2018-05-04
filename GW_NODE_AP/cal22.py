@@ -22,8 +22,8 @@ LENRM = 3736
 LENT =  480
 
 
-def define_order(line):
-    print("LINE=",line)
+def define_order(line,xtime):
+    # print("LINE=",line)
     global pa
     global pb
     global ta
@@ -46,7 +46,7 @@ def define_order(line):
         elif data_type == 0:
             ddtime = line[4][1]
 
-        print(data_type,uid,dtime,ddtime)
+        # print(data_type,uid,dtime,ddtime)
 
         if data_type == 0:
             pa = pb
@@ -97,7 +97,7 @@ def define_order(line):
         else:
             distdest[pb] = sum_dist
 
-        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r\n')
+        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,xtime)
         print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
