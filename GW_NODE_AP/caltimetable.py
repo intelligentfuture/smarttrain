@@ -205,9 +205,9 @@ def define_order(line):
             distdest[pb]=dds
         else:
             distdest[pb] = sum_dist
-
-        print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r')
-        print(sensors_text)
+        if data_type == 0:
+            print(len(sensors_list),data_type,uid,"|",pa,pb,"|tdiff=","%01.06f"%tdiff,"|v=","%03.06f"%speed,"|s=","%03.06f"%(ddist),"|ss=","%04.04f"%sum_dist,end='\r')
+#        print(sensors_text)
 
 #        send_speed(uid,speed)
         if sum_dist>LENRM:
