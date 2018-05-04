@@ -23,12 +23,13 @@ def init_system():
     d = 0  #duty
     trainForward()
     while True:
-        x,y,z,d = call_train(RailLength,TargetTime,v,p,t,d)
+        #Call_train(raillength,targettime,pos,speed,time,duty)
+        x,y,z,d = call_train(RailLength,TargetTime,p,v,t,d)
         print(x,y,z,d)
         if z > TargetTime:
             trainStop()
             break
-        time.sleep(5)
+    time.sleep(5)
     d = 0.38
     call_train(RailLength,TargetTime,0,0,0,d)
     call_train(RailLength,TargetTime,0.133,0.224,3.37,d)
