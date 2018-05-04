@@ -81,7 +81,7 @@ def define_order(line):
         if tag in distab:
             print(tag,ddist)
             dd = distab[tag]
-            if dd > 0:
+            if dd > 100:
                 dd = (dd+ddist)/2
                 distab[tag]=dd
 
