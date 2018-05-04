@@ -5,23 +5,42 @@ def init_system():
 
 
 #track lenm, target time, cspeed, curposition(from start point), curtime
-    TargetTime = 20
+
+#     TargetTime = 20
+#     RailLength = 3.736
+#     x[0] = 0
+#     y[0] = 0
+    #
+    # TargetTime = 7
+    # RailLength = 3.736
+    # x = 0
+    # y = 0
+    TargetTime = 7
     RailLength = 3.736
-    x[0] = 0
-    y[0] = 0
+    x = 0
+    y = 0
     z = 0
+    d = 0
+    trainForward()
     while True:
-        x,y,z = call_train(RailLength,TargetTime,x,y,z)
+        x,y,z,d = call_train(RailLength,TargetTime,x,y,z,d)
+        print(x,y,z,d)
+        if z > TargetTime:
+            trainStop()
+            break
+        time.sleep(5)
+
+        # x,y,z = call_train(RailLength,TargetTime,x,y,z)
 
 
-    call_train(RailLength,TargetTime,0,0,0)
-    call_train(RailLength,TargetTime,0.133,0.224,3.37)
-    call_train(RailLength,TargetTime,0.211,0.562,5.33)
-    call_train(RailLength,TargetTime,0.310,1.212,7.83)
-    call_train(RailLength,TargetTime,0.310,1.851,9.89)
-    call_train(RailLength,TargetTime,0.310,2.156,10.88)
-    call_train(RailLength,TargetTime,0.310,2.385,11.62)
-    call_train(RailLength,TargetTime,0.218,3.071,14.22)
+    # call_train(RailLength,TargetTime,0,0,0)
+    # call_train(RailLength,TargetTime,0.133,0.224,3.37)
+    # call_train(RailLength,TargetTime,0.211,0.562,5.33)
+    # call_train(RailLength,TargetTime,0.310,1.212,7.83)
+    # call_train(RailLength,TargetTime,0.310,1.851,9.89)
+    # call_train(RailLength,TargetTime,0.310,2.156,10.88)
+    # call_train(RailLength,TargetTime,0.310,2.385,11.62)
+    # call_train(RailLength,TargetTime,0.218,3.071,14.22)
 
     # call_train(0.224,3.37,0,0,0)
     # call_train(0.338,1.96,0,0.133,3.37)
@@ -32,7 +51,10 @@ def init_system():
     # call_train(0.686,2.6,0,0.310,11.62)
     # call_train(0.673,6.17,0,0.218,14.22)
 
-    time.sleep(5)
+
+    #call_train(3.736,60,0.1,0,0)
+
+
 
 
 if __name__ == "__main__":
