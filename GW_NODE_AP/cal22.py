@@ -1,7 +1,7 @@
 from TrainController import controller
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-
+import logging
 import json
 
 
@@ -126,7 +126,8 @@ def define_order(line):
         # print(sensors_text)
 #        controller(Tref,x0,v0,t0)
 # tref=time for loop, x0 = current position, v0 = current speed, t0 = current time
-        print(uid,speed,dtime)
+        # print(uid,speed,dtime)
+        logging.debug("ID:%s V:%f T:%f"%(uid, speed, dtime))
         send_speed(uid,speed)
         if sum_dist>LENRM:
             sum_dist = 0
@@ -169,4 +170,4 @@ def send_speed(point,speed):
         print(e)
 
 
-read_config()
+#read_config()

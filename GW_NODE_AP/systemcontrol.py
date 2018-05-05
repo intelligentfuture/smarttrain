@@ -5,6 +5,12 @@ import sys
 import time
 import socketserver
 import _thread
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(message)s',
+                    handlers=[logging.FileHandler("run.log"),
+                              logging.StreamHandler()])
+
 
 from cal22 import define_order
 
@@ -28,7 +34,7 @@ ttt = time.time()
 tmark = -1
 
 cur_uid = 'FFFF'
-cur_uid_speed 0
+cur_uid_speed = 0
 
 def sensorLoopTime(uid):
     try:
@@ -156,15 +162,16 @@ def init_system(): #track length, target time, cur speed, cur position(from star
         for i in range(TargetTime*2):
     #        elm = generatebytime()[i]
             cur_t = time.time() - st
-            elm = generatebytime(RailLength,TargetTime,1,st,cur_uid_speed,cur_uid,cur_t)
+            elm = generatebytime(RailLength,TargetTime,1,st,cur_uid_speed,p,cur_t,i)
             p,v,rt,d = call_train(elm[0],elm[1],elm[3],elm[2],cur_t,d)
-            print(p,v,rt,d)
+            logging.debug("PI Return, P:%03f V:%03f T:%03f D:%03f"%(p,v,rt,d))
         trainStop()
         time.sleep(5)
 
 
 if __name__ == "__main__":
     try:
+        logging.debug("Start!")
         server = socketserver.UDPServer(('0.0.0.0', 55555), nodeUDPHandler)
         _thread.start_new_thread(init_system, ())
         server.serve_forever()
@@ -176,5 +183,6 @@ if __name__ == "__main__":
         except Exception as e:
             print("\r\nExit...Error:", e)
         else:
+            logging.debug("Exit OK")
             print("\r\nExit...OK")
         sys.exit(0)
