@@ -1,6 +1,18 @@
+
+def findpositionandspeed(uid,cur_speed):
+    print(uid,cur_speed)
+
+
+
+
 def generatebytime(distant,duration,nstation,start_time,current_speed,current_position,current_time,index):
+    return generate(distant,duration,nstation,start_time,current_speed,current_position,current_time)[index]
 
 
+
+def generate(distant,duration,nstation,start_time,current_speed,current_position,current_time):
+
+    print("generatebytime")
     LENRM = distant #3.736 #mm
     LENT = 0.480  #mm
     SPEED_MAX = 0.630 # mmps  --> 0.593 mps
@@ -19,7 +31,7 @@ def generatebytime(distant,duration,nstation,start_time,current_speed,current_po
     timeframe = 0.5
     timeslot = int(timefora/timeframe)
     DIST_A = 1
-    DIST_B = 1
+    DIST_B = 0.9
     DIST_C = LENRM - DIST_A - DIST_B
     a1 = pow(SPEED_NORM,2)/(2*DIST_A)
     a2 = pow(SPEED_NORM,2)/(2*DIST_B)
@@ -62,7 +74,7 @@ def generatebytime(distant,duration,nstation,start_time,current_speed,current_po
 
     for x in range(0,timeslot):
         z=z+timeframe
-        v = u+(-a1*timeframe)
+        v = u+(-a2*timeframe)
         s = u*timeframe + 0.5*a1*timeframe*timeframe
         sumdist=sumdist + s
 
@@ -72,11 +84,11 @@ def generatebytime(distant,duration,nstation,start_time,current_speed,current_po
         u = v
 
     #print(timetable)
-    return timetable[index+1]
+    return timetable
 
 
 #def generatebytime(distant,duration,nstation,start_time,current_speed,current_position,current_time):
 if __name__ == "__main__":
-    print(generatebytime(3.736,20,1,0,0,0,0))
-    print(generatebytime(3.736,20,1,0,0,0,1))
-    print(generatebytime(3.736,20,1,0,0,0,2))
+    print(generatebytime(3.736,20,1,0,0,0,0,1))
+    # print(generatebytime(3.736,20,1,0,0,0,1))
+    # print(generatebytime(3.736,20,1,0,0,0,2))

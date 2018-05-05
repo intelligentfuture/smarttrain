@@ -11,6 +11,7 @@ sensors_list = list()
 distab = dict()
 distdest = dict()
 ab_order = list()
+abc_order = list()
 ta = 0
 tb = 0
 tdiff = 0
@@ -28,6 +29,8 @@ def read_config():
                 line = line.strip()
                 sensors_list.append(line)
                 # print(line)
+        sensors_round_list = sensors_list
+        sensors_round_list.append(sensors_list[0])
 
         with open("distab.list","r") as f:
             for line in f:
@@ -39,6 +42,9 @@ def read_config():
                 # print(key,val)
                 distab[key]=float(val)
                 ab_order.append(key)
+
+        for x in range(1,len(sensors_round_list)-1):
+            print(sensors_round_list[x-1],sensors_round_list[x],sensors_round_list[x+1],)
 
 
 def define_order(line):
@@ -161,3 +167,6 @@ def send_speed(point,speed):
             resp['status'] = 'OK'
     except Exception as e:
         print(e)
+
+
+read_config()
