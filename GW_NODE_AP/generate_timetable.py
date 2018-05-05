@@ -12,7 +12,7 @@ def generatebytime(distant,duration,nstation,start_time,current_speed,current_po
 
 def generate(distant,duration,nstation,start_time,current_speed,current_position,current_time):
 
-    print("generatebytime")
+#    print("generatebytime")
     LENRM = distant #3.736 #mm
     LENT = 0.480  #mm
     SPEED_MAX = 0.630 # mmps  --> 0.593 mps
